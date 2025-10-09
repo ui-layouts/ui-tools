@@ -28,7 +28,7 @@ function MobileHeader({ classname }: { classname?: string }) {
 							viewBox="0 0 642 421"
 							fill="none"
 							xmlns="http://www.w3.org/2000/svg"
-							className=" h-9 w-9 stroke-white"
+							className=" h-9 w-9 stroke-primary"
 							aria-hidden="true"
 							focusable="false"
 						>
