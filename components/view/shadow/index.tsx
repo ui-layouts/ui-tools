@@ -260,7 +260,7 @@ export default function ShadowGenerator() {
 			)}
 			<div
 				id="editor"
-				className="relative z-10 grid h-full min-h-0 grid-cols-12 gap-3 p-3 lg:grid-cols-[88px_320px_minmax(0,1fr)]"
+				className="relative z-10 grid h-full min-h-0 grid-cols-12 gap-3 p-3 lg:grid-cols-[88px_380px_minmax(0,1fr)]"
 			>
 				<div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
 					<div className="space-y-2">

@@ -76,7 +76,10 @@ export default function ShadowPreview({
 
 	return (
 		<ScrollArea className="h-full w-full">
-			<Tabs defaultValue="preview" className="relative h-full w-full">
+			<Tabs
+				defaultValue="preview"
+				className="relative flex h-full w-full flex-col"
+			>
 				<TabsList className="absolute top-1.5 right-1.5 z-10 bg-neutral-950 dark:bg-black">
 					<TabsTrigger
 						value="preview"
@@ -92,7 +95,10 @@ export default function ShadowPreview({
 					</TabsTrigger>
 				</TabsList>
 
-				<TabsContent value="preview" className="relative mt-0 space-y-6">
+				<TabsContent
+					value="preview"
+					className="relative mt-0 flex h-full min-h-0 flex-col gap-4"
+				>
 					<div className="absolute top-2 left-2 flex items-center gap-1">
 						<TooltipProvider>
 							<Tooltip>
@@ -201,7 +207,7 @@ export default function ShadowPreview({
 
 					<Card
 						className={cn(
-							"flex h-80 items-center justify-center p-6 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]",
+							"flex min-h-[340px] flex-1 items-center justify-center p-6 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]",
 						)}
 						style={{ backgroundColor: previewBackground }}
 					>
@@ -214,7 +220,7 @@ export default function ShadowPreview({
 							}}
 						/>
 					</Card>
-					<Card className="bg-card-bg p-6 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
+					<Card className="shrink-0 bg-card-bg p-6 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
 						<h3 className="mb-2 font-medium text-lg">Tailwind Class</h3>
 						<div className="mb-4 flex items-center gap-2">
 							<code className="flex-1 overflow-auto rounded-md border bg-main p-2 text-gray-700 text-sm dark:text-gray-300">
@@ -256,7 +262,7 @@ export default function ShadowPreview({
 						</div>
 					</Card>
 				</TabsContent>
-				<TabsContent value="code" className="mt-0">
+				<TabsContent value="code" className="mt-0 h-full min-h-0">
 					<div className="w-full overflow-y-hidden rounded-xl border bg-card-bg p-4 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
 						<h3 className="mb-4 font-medium text-lg">
 							How to use in your project

@@ -45,7 +45,7 @@ export default function ShadowPresets({
 	return (
 		<ScrollArea className="h-full rounded-xl border bg-card-bg dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
 			{mode === "saved" && savedShadows.length > 0 && (
-				<div className="grid grid-cols-2 gap-2 border-b p-4 xl:grid-cols-3 2xl:grid-cols-3">
+				<div className="grid grid-cols-2 gap-3 border-b p-4">
 					{savedShadows.map((shadow) => (
 						<motion.div
 							key={shadow.id}
@@ -81,7 +81,7 @@ export default function ShadowPresets({
 							</AnimatePresence>
 							<div
 								className={cn(
-									"relative flex h-20 w-full flex-col items-center justify-center rounded-lg text-center text-neutral-700 text-xs transition-transform group-hover:scale-105 dark:bg-neutral-950 dark:text-neutral-400",
+									"relative flex h-28 w-full flex-col items-center justify-center rounded-lg text-center text-neutral-700 text-sm transition-transform group-hover:scale-105 dark:bg-neutral-950 dark:text-neutral-400",
 								)}
 								style={{
 									boxShadow:
@@ -115,7 +115,7 @@ export default function ShadowPresets({
 			)}
 
 			{mode === "edited" && favouriteShadows.length > 0 && (
-				<div className="grid grid-cols-2 gap-2 border-b p-4 xl:grid-cols-3 2xl:grid-cols-3">
+				<div className="grid grid-cols-2 gap-3 border-b p-4">
 					{favouriteShadows.map((shadow) => (
 						<motion.div
 							key={shadow.id}
@@ -138,7 +138,7 @@ export default function ShadowPresets({
 							</AnimatePresence>
 							<div
 								className={cn(
-									"relative flex h-20 w-full flex-col items-center justify-center rounded-lg text-center text-neutral-700 text-xs transition-transform group-hover:scale-105 dark:bg-neutral-950 dark:text-neutral-400",
+									"relative flex h-28 w-full flex-col items-center justify-center rounded-lg text-center text-neutral-700 text-sm transition-transform group-hover:scale-105 dark:bg-neutral-950 dark:text-neutral-400",
 									isDarkMode
 										? shadow.darkTailwind
 											? shadow.darkTailwind
@@ -169,7 +169,7 @@ export default function ShadowPresets({
 			)}
 
 			{mode === "presets" && (
-				<div className="grid grid-cols-2 gap-2 p-4 xl:grid-cols-3 2xl:grid-cols-3">
+				<div className="grid grid-cols-2 gap-3 p-4">
 					{preBuiltShadows.map((shadow, index) => (
 						<motion.div
 							key={shadow.id || `preset_${index}`}
@@ -192,7 +192,7 @@ export default function ShadowPresets({
 							</AnimatePresence>
 							<div
 								className={cn(
-									"relative flex h-20 w-full flex-col items-center justify-center rounded-lg text-center text-neutral-700 text-xs transition-transform group-hover:scale-105 dark:bg-neutral-950 dark:text-neutral-400",
+									"relative flex h-28 w-full flex-col items-center justify-center rounded-lg text-center text-neutral-700 text-sm transition-transform group-hover:scale-105 dark:bg-neutral-950 dark:text-neutral-400",
 									isDarkMode
 										? shadow.darkTailwind
 											? shadow.darkTailwind
