@@ -32,22 +32,25 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { TabsTrigger } from "@radix-ui/react-tabs";
 import {
+	Bookmark,
 	ChevronDown,
 	ChevronUp,
 	CodeIcon,
 	Copy,
 	Edit2,
 	GripVertical,
+	Layers,
 	Loader,
+	PanelsTopLeft,
 	PencilLine,
 	Play,
 	RefreshCcw,
 	Save,
+	Settings2,
 	Trash2,
 	X,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import Link from "next/link";
 import { parseAsBoolean, parseAsIndex, useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
@@ -241,10 +244,10 @@ function SVGLineDrawGenerator() {
 				<div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:col-span-1 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
 					<div className="space-y-2">
 						{[
-							{ key: "presets", label: "Presets" },
-							{ key: "settings", label: "Settings" },
-							{ key: "edited", label: "Edited" },
-							{ key: "saved", label: "Saved" },
+							{ key: "presets", label: "Presets", icon: PanelsTopLeft },
+							{ key: "settings", label: "Settings", icon: Settings2 },
+							{ key: "edited", label: "Edited", icon: Layers },
+							{ key: "saved", label: "Saved", icon: Bookmark },
 						].map((item) => (
 							<button
 								type="button"
@@ -255,36 +258,35 @@ function SVGLineDrawGenerator() {
 									)
 								}
 								className={cn(
-									"grid h-14 w-full place-items-center rounded-md border px-1 font-semibold text-[11px] transition-colors",
+									"grid h-16 w-full place-items-center rounded-md border px-1 py-1 font-semibold text-[11px] transition-colors",
 									activeSidebarTab === item.key
 										? "border-primary bg-primary text-primary-foreground"
 										: "bg-main hover:bg-accent",
 								)}
 							>
-								{item.label}
+								<item.icon className="mb-0.5 h-4 w-4" />
+								<span>{item.label}</span>
 							</button>
 						))}
 					</div>
-					<div className="space-y-1 rounded-md border bg-main p-1">
-						<p className="px-1 py-1 text-center font-medium text-[10px] text-muted-foreground uppercase tracking-wide">
-							Editors
-						</p>
-						{[
-							{ href: "/svg-line-draw", label: "SVG" },
-							{ href: "/shadows", label: "Shadows" },
-							{ href: "/clip-paths", label: "Clip" },
-							{ href: "/mesh-gradients", label: "Mesh" },
-							{ href: "/background-snippets", label: "BG" },
-							{ href: "/color-lab", label: "Color" },
-						].map((tool) => (
-							<Link
-								key={tool.href}
-								href={tool.href}
-								className="grid h-8 place-items-center rounded-sm border bg-card-bg px-1 text-[10px] hover:bg-accent"
-							>
-								{tool.label}
-							</Link>
-						))}
+					<div className="rounded-md border bg-main p-1">
+						<select
+							className="h-9 w-full rounded-sm border bg-card-bg px-2 text-[10px]"
+							value="/svg-line-draw"
+							onChange={(e) => {
+								if (e.target.value) {
+									window.location.href = e.target.value;
+								}
+							}}
+						>
+							<option value="/svg-line-draw">Go to editor…</option>
+							<option value="/svg-line-draw">SVG Line Draw</option>
+							<option value="/shadows">Shadows</option>
+							<option value="/clip-paths">Clip-paths</option>
+							<option value="/mesh-gradients">Mesh Gradients</option>
+							<option value="/background-snippets">Background Snippets</option>
+							<option value="/color-lab">Color Lab</option>
+						</select>
 					</div>
 				</div>
 
