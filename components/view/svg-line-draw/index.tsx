@@ -32,10 +32,8 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { TabsTrigger } from "@radix-ui/react-tabs";
 import {
-	Check,
 	ChevronDown,
 	ChevronUp,
-	ChevronsDown,
 	CodeIcon,
 	Copy,
 	Edit2,
@@ -44,7 +42,6 @@ import {
 	PencilLine,
 	Play,
 	RefreshCcw,
-	RefreshCw,
 	Save,
 	Trash2,
 	X,
@@ -59,7 +56,7 @@ import { CopyCode } from "../mesh-gradient/copy-code";
 import { AnimateSvg } from "./animate-svg";
 import { CodePreview } from "./code-preview";
 import { CustomLineInput } from "./custom-line-input";
-import { compoentCode, examplesSvgPath } from "./data";
+import { compoentCode } from "./data";
 import { DrawingCanvas } from "./drawing-canvas";
 import { SavedEditedPathsTab } from "./edited-paths";
 import { ExamplePaths } from "./example-paths";
@@ -85,7 +82,7 @@ type AnimationSettings = {
 function SVGLineDrawGenerator() {
 	const { theme } = useTheme();
 	const [activePresets, setActivePresets] = useQueryState("presets");
-	const [exampleViewBox, setExampleViewBox] = useQueryState("viewBox", {
+	const [exampleViewBox, _setExampleViewBox] = useQueryState("viewBox", {
 		defaultValue: "0 0 250 100",
 	});
 	const [editPath, setEditPath] = useQueryState(
@@ -96,12 +93,7 @@ function SVGLineDrawGenerator() {
 		"customDrawLine",
 		parseAsBoolean.withDefault(false),
 	);
-	const [viewAll, setViewAll] = useState(false);
 	const [currentPath, setCurrentPath] = useState<string>("");
-	const [animationKeys, setAnimationKeys] = useState<Record<number, number>>(
-		{},
-	);
-	const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 	const [savedPaths, _setSavedPaths] = useState<string[]>([]);
 	const [previewKey, setPreviewKey] = useState(0);
 	const [_showEditor, setShowEditor] = useState(false);
@@ -193,13 +185,6 @@ function SVGLineDrawGenerator() {
 	//   setShowEditor(true);
 	// };
 
-	const reloadAnimation = (index: number) => {
-		setAnimationKeys((prev) => ({
-			...prev,
-			[index]: (prev[index] || 0) + 1,
-		}));
-	};
-
 	// Generate code for the current animation
 	const generateCode = () => {
 		const pathsCode =
@@ -246,161 +231,16 @@ function SVGLineDrawGenerator() {
 		}
 	};
 
-	const copyDynamicCode = (index: number) => {
-		const example = examplesSvgPath[index];
-
-		// Generate the full component code
-		const code = `<AnimateSvg
-  width="100%"
-  height="100%"
-  viewBox="${example.viewBox}"
-  className="my-svg-animation"
-  path="${example.path}"
-  strokeColor="#000000"
-  strokeWidth={3}
-  strokeLinecap="round"
-  animationDuration={1.5}
-  animationDelay={0}
-  animationBounce={0.3}
-  reverseAnimation={false}
-  enableHoverAnimation={true}
-  hoverAnimationType="redraw"
-  hoverStrokeColor="#4f46e5"
-/>`;
-
-		navigator.clipboard.writeText(code).then(() => {
-			setCopiedIndex(index);
-			toast.success("Component code copied", {
-				description: `${example.name} component code copied to clipboard`,
-			});
-
-			// Reset copied state after 2 seconds
-			setTimeout(() => {
-				setCopiedIndex(null);
-			}, 2000);
-		});
-	};
 	return (
-		<div className="mx-auto w-full px-5 xl:container 2xl:px-0">
-			<article className="space-y-3 pb-8">
-				<h1 className="text-center font-medium text-2xl sm:text-3xl md:text-5xl ">
-					SVG Path Animation For <br /> Developers & Designers
-				</h1>
-
-				<div className="mx-auto flex w-fit items-center justify-center gap-2 font-semibold">
-					<div className="flex gap-2 rounded-md border bg-card-bg p-2 shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
-						Expand
-						<Switch
-							id="view-all-switch"
-							checked={viewAll}
-							onCheckedChange={setViewAll}
-							className="bg-main"
-						/>
-					</div>
-					<a
-						href="#editor"
-						className="group flex cursor-pointer gap-1 rounded-md border bg-card-bg p-2 text-primary shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] hover:bg-accent dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0"
-					>
-						Click to Editor
-						<ChevronsDown />
-					</a>
-				</div>
-			</article>
-
+		<div className="h-full w-full overflow-hidden p-3">
 			<div
-				className={cn(
-					"relative mx-auto grid max-w-screen-lg grid-cols-2 gap-6 px-4 pb-10 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:px-0 2xl:max-w-screen-xl 2xl:gap-10",
-					viewAll && "h-full",
-				)}
+				className="relative grid h-full min-h-0 grid-cols-12 gap-3"
+				id="editor"
 			>
-				{!viewAll && (
-					<div className="absolute bottom-0 left-0 z-10 grid h-60 w-full place-content-center bg-gradient-to-t from-42% from-white dark:from-black" />
-				)}
-
-				{(viewAll ? examplesSvgPath : examplesSvgPath.slice(0, 10)).map(
-					(example, index) => (
-						<div
-							key={index}
-							className="group relative rounded-xl border bg-card-bg p-1"
-						>
-							<div
-								className={cn(
-									" relative h-44 w-full cursor-pointer rounded-xl p-4",
-									activePresets === example.id && " bg-main",
-								)}
-								onClick={() => {
-									setCurrentPath(example.path);
-									setExampleViewBox(example.viewBox);
-									setActivePresets(example.id);
-								}}
-								onKeyUp={() => {
-									setCurrentPath(example.path);
-									setExampleViewBox(example.viewBox);
-									setActivePresets(example.id);
-								}}
-								onKeyDown={() => {
-									setCurrentPath(example.path);
-									setExampleViewBox(example.viewBox);
-									setActivePresets(example.id);
-								}}
-								onKeyPress={() => {
-									setCurrentPath(example.path);
-									setExampleViewBox(example.viewBox);
-									setActivePresets(example.id);
-								}}
-							>
-								<AnimateSvg
-									key={animationKeys[index] || 0}
-									width="100"
-									height="100"
-									viewBox={example.viewBox}
-									className="h-full w-full"
-									path={example.path}
-									strokeColor={theme === "light" ? "#000000" : "#ffffff"}
-									strokeWidth={3}
-									strokeLinecap="round"
-									animationDuration={1.5}
-									animationDelay={0}
-									animationBounce={0.3}
-									reverseAnimation={false}
-								/>
-								<p className="absolute bottom-0 left-0 w-full p-2 text-center font-semibold">
-									{example.name}
-								</p>
-							</div>
-
-							<div className="absolute top-1 right-1 z-50 flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
-								<Button
-									variant="secondary"
-									size="sm"
-									className="group h-8 w-8"
-									onClick={() => reloadAnimation(index)}
-								>
-									<RefreshCw className="h-4 w-4 transition-transform group-hover:rotate-45" />
-								</Button>
-								<Button
-									variant="secondary"
-									size="sm"
-									className="h-8 w-8 "
-									onClick={() => copyDynamicCode(index)}
-								>
-									{copiedIndex === index ? (
-										<Check className="h-4 w-4 " />
-									) : (
-										<Copy className="h-4 w-4 " />
-									)}
-								</Button>
-							</div>
-						</div>
-					),
-				)}
-			</div>
-			<div className="relative grid h-screen grid-cols-12 gap-6" id="editor">
 				{/* Left Column - Examples and Animation Settings */}
 				<div
 					className={cn(
-						"sticky inset-shadow-[0_1px_rgb(0_0_0/0.10)] top-2 h-[98vh] space-y-6 rounded-lg border bg-card-bg p-3 lg:col-span-4 2xl:col-span-3 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0",
-						editPath || customDrawLine ? "hidden" : "hidden lg:block",
+						"inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 space-y-4 rounded-lg border bg-card-bg p-3 lg:col-span-4 lg:block 2xl:col-span-3 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0",
 					)}
 				>
 					<Tabs defaultValue="presets">
@@ -437,8 +277,11 @@ function SVGLineDrawGenerator() {
                 Custom
               </TabsTrigger> */}
 						</TabsList>
-						<TabsContent value="presets" className="h-[80vh] 2xl:h-[85vh]">
-							<ScrollArea className=" h-[80vh] space-y-6 overflow-auto rounded-lg border bg-main p-3 2xl:h-[85vh] ">
+						<TabsContent
+							value="presets"
+							className="h-[calc(100%-60px)] min-h-0"
+						>
+							<ScrollArea className="h-full space-y-6 overflow-auto rounded-lg border bg-main p-3">
 								<ExamplePaths
 									onSelectPath={setCurrentPath}
 									// onEditPath={openEditorForExample}
@@ -669,14 +512,11 @@ function SVGLineDrawGenerator() {
 				{/* Right Column - Preview and Drawing Canvas */}
 				<div
 					className={cn(
-						" relative h-[100vh] py-4 ",
-						customDrawLine || editPath
-							? "col-span-12 xl:col-span-12"
-							: "col-span-12 lg:col-span-8 2xl:col-span-9",
+						"relative col-span-12 h-full min-h-0 lg:col-span-8 2xl:col-span-9",
 					)}
 				>
 					{/* Preview Section */}
-					<Card className="mb-6 h-full">
+					<Card className="h-full min-h-0">
 						<CardHeader>
 							<div
 								className={cn(
@@ -747,7 +587,7 @@ function SVGLineDrawGenerator() {
 								<CardDescription>See your animation in action</CardDescription>
 							)}
 						</CardHeader>
-						<CardContent className="h-[85%] 2xl:h-[90%]">
+						<CardContent className="min-h-0 flex-1">
 							<PanelGroup direction="horizontal">
 								<Panel defaultSize={customDrawLine ? 50 : 100} minSize={20}>
 									<div
