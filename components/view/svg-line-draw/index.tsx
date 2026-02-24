@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/popover";
 import { CustomSlider } from "@/components/ui/range-slider";
 import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
 	Select,
 	SelectContent,
@@ -29,7 +30,6 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { TabsTrigger } from "@radix-ui/react-tabs";
 import {
 	ChevronDown,
@@ -240,10 +240,10 @@ function SVGLineDrawGenerator() {
 				{/* Left Column - Examples and Animation Settings */}
 				<div
 					className={cn(
-						"inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 space-y-4 rounded-lg border bg-card-bg p-3 lg:col-span-4 lg:block 2xl:col-span-3 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0",
+						"inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-3 lg:col-span-4 lg:block 2xl:col-span-3 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0",
 					)}
 				>
-					<Tabs defaultValue="presets">
+					<Tabs defaultValue="presets" className="flex h-full min-h-0 flex-col">
 						<TabsList className="flex h-12 w-full gap-1 rounded-md border bg-main p-1.5 ">
 							<TabsTrigger
 								value="presets"
@@ -277,11 +277,8 @@ function SVGLineDrawGenerator() {
                 Custom
               </TabsTrigger> */}
 						</TabsList>
-						<TabsContent
-							value="presets"
-							className="h-[calc(100%-60px)] min-h-0"
-						>
-							<ScrollArea className="h-full space-y-6 overflow-auto rounded-lg border bg-main p-3">
+						<TabsContent value="presets" className="mt-3 min-h-0 flex-1">
+							<ScrollArea className="h-full rounded-lg border bg-main p-3">
 								<ExamplePaths
 									onSelectPath={setCurrentPath}
 									// onEditPath={openEditorForExample}
@@ -290,193 +287,195 @@ function SVGLineDrawGenerator() {
 								/>
 							</ScrollArea>
 						</TabsContent>
-						<TabsContent value="settings">
+						<TabsContent value="settings" className="mt-3 min-h-0 flex-1">
 							{/* Animation Settings */}
-							<div className="space-y-4 rounded-lg border bg-main p-4">
-								<div className="space-y-2">
-									<Label htmlFor="viewBox">ViewBox</Label>
-									<Input
-										id="viewBox"
-										value={settings.viewBox}
-										onChange={(e) => updateSetting("viewBox", e.target.value)}
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label htmlFor="strokeColor">Stroke Color</Label>
-									<div className="flex gap-2">
-										<Popover
-											open={strokeColorPickerOpen}
-											onOpenChange={setStrokeColorPickerOpen}
-										>
-											<PopoverTrigger asChild>
-												<Button
-													variant="outline"
-													className="h-10 w-10 border-2 p-0"
-													style={{ backgroundColor: settings.strokeColor }}
-												>
-													<span className="sr-only">Pick a color</span>
-												</Button>
-											</PopoverTrigger>
-											<PopoverContent className="w-auto p-3">
-												<HexColorPicker
-													color={settings.strokeColor}
-													onChange={(color) =>
-														updateSetting("strokeColor", color)
-													}
-												/>
-												<div className="mt-2 flex">
-													<Input
-														value={settings.strokeColor}
-														onChange={(e) =>
-															updateSetting("strokeColor", e.target.value)
-														}
-														className="flex-1"
-													/>
-												</div>
-											</PopoverContent>
-										</Popover>
+							<ScrollArea className="h-full rounded-lg border bg-main p-4">
+								<div className="space-y-4">
+									<div className="space-y-2">
+										<Label htmlFor="viewBox">ViewBox</Label>
 										<Input
-											value={settings.strokeColor}
-											onChange={(e) =>
-												updateSetting("strokeColor", e.target.value)
-											}
-											className="flex-1"
+											id="viewBox"
+											value={settings.viewBox}
+											onChange={(e) => updateSetting("viewBox", e.target.value)}
 										/>
 									</div>
-								</div>
-
-								<div className="space-y-3">
-									<Label htmlFor="strokeWidth">
-										Stroke Width: {settings.strokeWidth}
-									</Label>
-									<CustomSlider
-										id="strokeWidth"
-										min={1}
-										max={10}
-										step={0.5}
-										value={[settings.strokeWidth]}
-										onValueChange={(value) =>
-											updateSetting("strokeWidth", value[0])
-										}
-									/>
-								</div>
-
-								<div className="space-y-2">
-									<Label htmlFor="strokeLinecap">Stroke Linecap</Label>
-									<Select
-										value={settings.strokeLinecap}
-										onValueChange={(value) =>
-											updateSetting("strokeLinecap", value as any)
-										}
-									>
-										<SelectTrigger>
-											<SelectValue placeholder="Select linecap style" />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value="butt">Butt</SelectItem>
-											<SelectItem value="round">Round</SelectItem>
-											<SelectItem value="square">Square</SelectItem>
-										</SelectContent>
-									</Select>
-								</div>
-
-								<div className="space-y-2">
-									<Label htmlFor="animationDuration">
-										Animation Duration: {settings.animationDuration}s
-									</Label>
-									<CustomSlider
-										id="animationDuration"
-										min={0.5}
-										max={5}
-										step={0.1}
-										value={[settings.animationDuration]}
-										onValueChange={(value) =>
-											updateSetting("animationDuration", value[0])
-										}
-									/>
-								</div>
-
-								<div className="space-y-2">
-									<Label htmlFor="animationDelay">
-										Animation Delay: {settings.animationDelay}s
-									</Label>
-									<CustomSlider
-										id="animationDelay"
-										min={0}
-										max={2}
-										step={0.1}
-										value={[settings.animationDelay]}
-										onValueChange={(value) =>
-											updateSetting("animationDelay", value[0])
-										}
-									/>
-								</div>
-
-								<div className="space-y-2">
-									<Label htmlFor="animationBounce">
-										Animation Bounce: {settings.animationBounce}
-									</Label>
-									<CustomSlider
-										id="animationBounce"
-										min={0}
-										max={1}
-										step={0.05}
-										value={[settings.animationBounce]}
-										onValueChange={(value) =>
-											updateSetting("animationBounce", value[0])
-										}
-									/>
-								</div>
-
-								<div className="flex items-center space-x-2">
-									<Switch
-										id="reverseAnimation"
-										checked={settings.reverseAnimation}
-										onCheckedChange={(checked) =>
-											updateSetting("reverseAnimation", checked)
-										}
-									/>
-									<Label htmlFor="reverseAnimation">Reverse Animation</Label>
-								</div>
-
-								<div className="flex items-center space-x-2">
-									<Switch
-										id="enableHoverAnimation"
-										checked={settings.enableHoverAnimation}
-										onCheckedChange={(checked) =>
-											updateSetting("enableHoverAnimation", checked)
-										}
-									/>
-									<Label htmlFor="enableHoverAnimation">
-										Enable Hover Animation
-									</Label>
-								</div>
-
-								{settings.enableHoverAnimation && (
 									<div className="space-y-2">
-										<Label htmlFor="hoverAnimationType">
-											Hover Animation Type
+										<Label htmlFor="strokeColor">Stroke Color</Label>
+										<div className="flex gap-2">
+											<Popover
+												open={strokeColorPickerOpen}
+												onOpenChange={setStrokeColorPickerOpen}
+											>
+												<PopoverTrigger asChild>
+													<Button
+														variant="outline"
+														className="h-10 w-10 border-2 p-0"
+														style={{ backgroundColor: settings.strokeColor }}
+													>
+														<span className="sr-only">Pick a color</span>
+													</Button>
+												</PopoverTrigger>
+												<PopoverContent className="w-auto p-3">
+													<HexColorPicker
+														color={settings.strokeColor}
+														onChange={(color) =>
+															updateSetting("strokeColor", color)
+														}
+													/>
+													<div className="mt-2 flex">
+														<Input
+															value={settings.strokeColor}
+															onChange={(e) =>
+																updateSetting("strokeColor", e.target.value)
+															}
+															className="flex-1"
+														/>
+													</div>
+												</PopoverContent>
+											</Popover>
+											<Input
+												value={settings.strokeColor}
+												onChange={(e) =>
+													updateSetting("strokeColor", e.target.value)
+												}
+												className="flex-1"
+											/>
+										</div>
+									</div>
+
+									<div className="space-y-3">
+										<Label htmlFor="strokeWidth">
+											Stroke Width: {settings.strokeWidth}
 										</Label>
-										<Select
-											value={settings.hoverAnimationType}
+										<CustomSlider
+											id="strokeWidth"
+											min={1}
+											max={10}
+											step={0.5}
+											value={[settings.strokeWidth]}
 											onValueChange={(value) =>
-												updateSetting("hoverAnimationType", value as any)
+												updateSetting("strokeWidth", value[0])
+											}
+										/>
+									</div>
+
+									<div className="space-y-2">
+										<Label htmlFor="strokeLinecap">Stroke Linecap</Label>
+										<Select
+											value={settings.strokeLinecap}
+											onValueChange={(value) =>
+												updateSetting("strokeLinecap", value as any)
 											}
 										>
 											<SelectTrigger>
-												<SelectValue placeholder="Select animation type" />
+												<SelectValue placeholder="Select linecap style" />
 											</SelectTrigger>
 											<SelectContent>
-												<SelectItem value="float">Float</SelectItem>
-												<SelectItem value="pulse">Pulse</SelectItem>
-												<SelectItem value="redraw">Redraw</SelectItem>
-												<SelectItem value="color">Color</SelectItem>
-												<SelectItem value="sequential">Sequential</SelectItem>
+												<SelectItem value="butt">Butt</SelectItem>
+												<SelectItem value="round">Round</SelectItem>
+												<SelectItem value="square">Square</SelectItem>
 											</SelectContent>
 										</Select>
 									</div>
-								)}
-							</div>
+
+									<div className="space-y-2">
+										<Label htmlFor="animationDuration">
+											Animation Duration: {settings.animationDuration}s
+										</Label>
+										<CustomSlider
+											id="animationDuration"
+											min={0.5}
+											max={5}
+											step={0.1}
+											value={[settings.animationDuration]}
+											onValueChange={(value) =>
+												updateSetting("animationDuration", value[0])
+											}
+										/>
+									</div>
+
+									<div className="space-y-2">
+										<Label htmlFor="animationDelay">
+											Animation Delay: {settings.animationDelay}s
+										</Label>
+										<CustomSlider
+											id="animationDelay"
+											min={0}
+											max={2}
+											step={0.1}
+											value={[settings.animationDelay]}
+											onValueChange={(value) =>
+												updateSetting("animationDelay", value[0])
+											}
+										/>
+									</div>
+
+									<div className="space-y-2">
+										<Label htmlFor="animationBounce">
+											Animation Bounce: {settings.animationBounce}
+										</Label>
+										<CustomSlider
+											id="animationBounce"
+											min={0}
+											max={1}
+											step={0.05}
+											value={[settings.animationBounce]}
+											onValueChange={(value) =>
+												updateSetting("animationBounce", value[0])
+											}
+										/>
+									</div>
+
+									<div className="flex items-center space-x-2">
+										<Switch
+											id="reverseAnimation"
+											checked={settings.reverseAnimation}
+											onCheckedChange={(checked) =>
+												updateSetting("reverseAnimation", checked)
+											}
+										/>
+										<Label htmlFor="reverseAnimation">Reverse Animation</Label>
+									</div>
+
+									<div className="flex items-center space-x-2">
+										<Switch
+											id="enableHoverAnimation"
+											checked={settings.enableHoverAnimation}
+											onCheckedChange={(checked) =>
+												updateSetting("enableHoverAnimation", checked)
+											}
+										/>
+										<Label htmlFor="enableHoverAnimation">
+											Enable Hover Animation
+										</Label>
+									</div>
+
+									{settings.enableHoverAnimation && (
+										<div className="space-y-2">
+											<Label htmlFor="hoverAnimationType">
+												Hover Animation Type
+											</Label>
+											<Select
+												value={settings.hoverAnimationType}
+												onValueChange={(value) =>
+													updateSetting("hoverAnimationType", value as any)
+												}
+											>
+												<SelectTrigger>
+													<SelectValue placeholder="Select animation type" />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectItem value="float">Float</SelectItem>
+													<SelectItem value="pulse">Pulse</SelectItem>
+													<SelectItem value="redraw">Redraw</SelectItem>
+													<SelectItem value="color">Color</SelectItem>
+													<SelectItem value="sequential">Sequential</SelectItem>
+												</SelectContent>
+											</Select>
+										</div>
+									)}
+								</div>
+							</ScrollArea>
 						</TabsContent>
 						{/* <TabsContent value="custom-paths">
               <CustomLineInput 
@@ -484,27 +483,31 @@ function SVGLineDrawGenerator() {
               setActivePresets={setActivePresets}
               />
             </TabsContent> */}
-						<TabsContent value="edited">
-							<SavedEditedPathsTab
-								activePresets={activePresets}
-								setActivePresets={setActivePresets}
-								onSelectPath={(path, viewBox) => {
-									setCurrentPath(path);
-									updateSetting("viewBox", viewBox);
-									setPreviewKey((prev) => prev + 1);
-								}}
-							/>
+						<TabsContent value="edited" className="mt-3 min-h-0 flex-1">
+							<ScrollArea className="h-full rounded-lg border bg-main p-2">
+								<SavedEditedPathsTab
+									activePresets={activePresets}
+									setActivePresets={setActivePresets}
+									onSelectPath={(path, viewBox) => {
+										setCurrentPath(path);
+										updateSetting("viewBox", viewBox);
+										setPreviewKey((prev) => prev + 1);
+									}}
+								/>
+							</ScrollArea>
 						</TabsContent>
-						<TabsContent value="saved">
-							<SavedPathsTab
-								activePresets={activePresets}
-								setActivePresets={setActivePresets}
-								onSelectPath={(path, viewBox) => {
-									setCurrentPath(path);
-									updateSetting("viewBox", viewBox);
-									setPreviewKey((prev) => prev + 1);
-								}}
-							/>
+						<TabsContent value="saved" className="mt-3 min-h-0 flex-1">
+							<ScrollArea className="h-full rounded-lg border bg-main p-2">
+								<SavedPathsTab
+									activePresets={activePresets}
+									setActivePresets={setActivePresets}
+									onSelectPath={(path, viewBox) => {
+										setCurrentPath(path);
+										updateSetting("viewBox", viewBox);
+										setPreviewKey((prev) => prev + 1);
+									}}
+								/>
+							</ScrollArea>
 						</TabsContent>
 					</Tabs>
 				</div>
@@ -516,8 +519,8 @@ function SVGLineDrawGenerator() {
 					)}
 				>
 					{/* Preview Section */}
-					<Card className="h-full min-h-0">
-						<CardHeader>
+					<Card className="flex h-full min-h-0 flex-col overflow-hidden">
+						<CardHeader className="shrink-0">
 							<div
 								className={cn(
 									"flex flex-wrap items-center",
@@ -588,12 +591,12 @@ function SVGLineDrawGenerator() {
 							)}
 						</CardHeader>
 						<CardContent className="min-h-0 flex-1">
-							<PanelGroup direction="horizontal">
+							<PanelGroup direction="horizontal" className="h-full">
 								<Panel defaultSize={customDrawLine ? 50 : 100} minSize={20}>
 									<div
 										className={cn(
-											"relative flex w-full items-center justify-center rounded-xl",
-											editPath ? "h-[95%] p-0 " : "h-[95%] border bg-main p-4 ",
+											"relative flex h-full w-full items-center justify-center rounded-xl",
+											editPath ? "p-0" : "border bg-main p-4",
 											customDrawLine && "h-full",
 										)}
 									>

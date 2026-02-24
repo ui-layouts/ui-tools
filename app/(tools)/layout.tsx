@@ -15,7 +15,7 @@ function Toolslayout({ children }: { children: React.ReactNode }) {
 				className={
 					isLineDraw
 						? "h-full overflow-hidden"
-						: "h-full overflow-hidden px-3 pb-3 pt-20 xl:px-6"
+						: "h-full overflow-hidden px-3 pt-20 pb-3 xl:px-6"
 				}
 			>
 				{children}
