@@ -89,10 +89,7 @@ function SVGLineDrawGenerator() {
 		"editPath",
 		parseAsBoolean.withDefault(false),
 	);
-	const [customDrawLine, setCustomDrawLine] = useQueryState(
-		"customDrawLine",
-		parseAsBoolean.withDefault(false),
-	);
+	const [customDrawLine, setCustomDrawLine] = useState(false);
 	const [currentPath, setCurrentPath] = useState<string>("");
 	const [savedPaths, _setSavedPaths] = useState<string[]>([]);
 	const [previewKey, setPreviewKey] = useState(0);
@@ -280,7 +277,11 @@ function SVGLineDrawGenerator() {
 						<TabsContent value="presets" className="mt-3 min-h-0 flex-1">
 							<ScrollArea className="h-full rounded-lg border bg-main p-3">
 								<ExamplePaths
-									onSelectPath={setCurrentPath}
+									onSelectPath={(path) => {
+										setCurrentPath(path);
+										setCustomDrawLine(false);
+										setEditPath(false);
+									}}
 									// onEditPath={openEditorForExample}
 									setActivePresets={setActivePresets}
 									activePresets={activePresets}
@@ -490,6 +491,7 @@ function SVGLineDrawGenerator() {
 									setActivePresets={setActivePresets}
 									onSelectPath={(path, viewBox) => {
 										setCurrentPath(path);
+										setCustomDrawLine(false);
 										updateSetting("viewBox", viewBox);
 										setPreviewKey((prev) => prev + 1);
 									}}
@@ -503,6 +505,7 @@ function SVGLineDrawGenerator() {
 									setActivePresets={setActivePresets}
 									onSelectPath={(path, viewBox) => {
 										setCurrentPath(path);
+										setCustomDrawLine(false);
 										updateSetting("viewBox", viewBox);
 										setPreviewKey((prev) => prev + 1);
 									}}
