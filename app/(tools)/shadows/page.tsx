@@ -1,4 +1,5 @@
 import ShadowGenerator from "@/components/view/shadow";
+import { ToolPlaygroundShell } from "@/components/common/tool-playground-shell";
 import { siteConfig } from "@/lib/utils";
 import type { Metadata } from "next";
 import React from "react";
@@ -53,9 +54,16 @@ export const metadata: Metadata = {
 
 function page() {
 	return (
-		<>
+		<ToolPlaygroundShell
+			title="Shadows Lab"
+			description="Craft layered box-shadows with instant CSS output."
+			examples={["Soft card", "Neumorph", "Floating panel", "Inset depth"]}
+			docs="Use Playground for live editing, Examples to load quick presets, and Export to copy production-ready output."
+			exportLabel="CSS"
+			exportCode={`/* export output from active tool */`}
+		>
 			<ShadowGenerator />
-		</>
+		</ToolPlaygroundShell>
 	);
 }
 

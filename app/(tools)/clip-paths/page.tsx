@@ -2,6 +2,7 @@ import ClipPathGenerator from "@/components/view/clip-path";
 import { siteConfig } from "@/lib/utils";
 import type { Metadata } from "next";
 import React from "react";
+import { ToolPlaygroundShell } from "@/components/common/tool-playground-shell";
 export const metadata: Metadata = {
 	title: "SVG Clip-Path Generator",
 	description:
@@ -52,9 +53,16 @@ export const metadata: Metadata = {
 
 function page() {
 	return (
-		<>
+		<ToolPlaygroundShell
+			title="Clip-path Generator"
+			description="Create polygon, circle, ellipse, and inset clip-path shapes."
+			examples={["Hexagon", "Blob", "Ticket", "Diamond"]}
+			docs="Use Playground for live editing, Examples to load quick presets, and Export to copy production-ready output."
+			exportLabel="CSS"
+			exportCode={`/* export output from active tool */`}
+		>
 			<ClipPathGenerator />
-		</>
+		</ToolPlaygroundShell>
 	);
 }
 

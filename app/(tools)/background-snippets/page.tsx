@@ -2,6 +2,7 @@ import BackgroundSnippetsGenerator from "@/components/view/background-snippets";
 import { siteConfig } from "@/lib/utils";
 import type { Metadata } from "next";
 import React from "react";
+import { ToolPlaygroundShell } from "@/components/common/tool-playground-shell";
 export const metadata: Metadata = {
   title: "Background Snippets Generator",
   description:
@@ -56,11 +57,18 @@ export const metadata: Metadata = {
   },
 };
 function page() {
-  return (
-    <>
-      <BackgroundSnippetsGenerator />
-    </>
-  );
+	return (
+		<ToolPlaygroundShell
+			title="Background Snippets Generator"
+			description="Generate modern CSS snippets for patterned backgrounds."
+			examples={["Noise", "Grid", "Dots", "Stripes"]}
+			docs="Use Playground for live editing, Examples to load quick presets, and Export to copy production-ready output."
+			exportLabel="CSS"
+			exportCode={`/* export output from active tool */`}
+		>
+			<BackgroundSnippetsGenerator />
+		</ToolPlaygroundShell>
+	);
 }
 
 export default page;

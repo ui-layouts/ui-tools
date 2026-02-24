@@ -1,4 +1,5 @@
 import SVGLineDrawGenerator from "@/components/view/svg-line-draw";
+import { ToolPlaygroundShell } from "@/components/common/tool-playground-shell";
 import { siteConfig } from "@/lib/utils";
 import type { Metadata } from "next";
 import React, { Suspense } from "react";
@@ -71,11 +72,18 @@ const PageLoading = () => {
 };
 function page() {
 	return (
-		<>
+		<ToolPlaygroundShell
+			title="SVG Line Draw"
+			description="Sketch doodle lines and export reusable SVG/React code."
+			examples={["Underline", "Arrow", "Border scribble", "Highlight stroke"]}
+			docs="Use Playground for live editing, Examples to load quick presets, and Export to copy production-ready output."
+			exportLabel="SVG"
+			exportCode={`{/* export output from active tool */}`}
+		>
 			<Suspense fallback={<PageLoading />}>
 				<SVGLineDrawGenerator />
 			</Suspense>
-		</>
+		</ToolPlaygroundShell>
 	);
 }
 
