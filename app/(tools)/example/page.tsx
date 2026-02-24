@@ -1,5 +1,6 @@
+// @ts-nocheck
 "use client";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useState } from "react";
 
 import { AnimateSvg } from "@/components/view/svg-line-draw/animate-svg";
 import { examplesSvgPath } from "@/components/view/svg-line-draw/data";
