@@ -97,6 +97,9 @@ function SVGLineDrawGenerator() {
 	const [_editorViewBox, _setEditorViewBox] = useState("0 0 100 100");
 	const [strokeColorPickerOpen, setStrokeColorPickerOpen] = useState(false);
 	const [showSaveDialog, setShowSaveDialog] = useState(false);
+	const [activeSidebarTab, setActiveSidebarTab] = useState<
+		"presets" | "settings" | "edited" | "saved"
+	>("presets");
 	// Update the default smoothing value to be more appropriate
 	const [settings, setSettings] = useState<AnimationSettings>({
 		width: "100%",
@@ -234,14 +237,55 @@ function SVGLineDrawGenerator() {
 				className="relative grid h-full min-h-0 grid-cols-12 gap-3"
 				id="editor"
 			>
+				<div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:col-span-1 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
+					<div className="space-y-2">
+						{[
+							{ key: "presets", label: "P" },
+							{ key: "settings", label: "S" },
+							{ key: "edited", label: "E" },
+							{ key: "saved", label: "V" },
+						].map((item) => (
+							<button
+								type="button"
+								key={item.key}
+								onClick={() =>
+									setActiveSidebarTab(
+										item.key as "presets" | "settings" | "edited" | "saved",
+									)
+								}
+								className={cn(
+									"grid h-14 w-full place-items-center rounded-md border font-semibold text-sm transition-colors",
+									activeSidebarTab === item.key
+										? "border-primary bg-primary text-primary-foreground"
+										: "bg-main hover:bg-accent",
+								)}
+							>
+								{item.label}
+							</button>
+						))}
+					</div>
+					<div className="space-y-2">
+						<div className="h-12 rounded-md border bg-main" />
+						<div className="h-12 rounded-md border bg-main" />
+					</div>
+				</div>
+
 				{/* Left Column - Examples and Animation Settings */}
 				<div
 					className={cn(
-						"inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-3 lg:col-span-4 lg:block 2xl:col-span-3 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0",
+						"inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-3 lg:col-span-3 lg:block 2xl:col-span-2 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0",
 					)}
 				>
-					<Tabs defaultValue="presets" className="flex h-full min-h-0 flex-col">
-						<TabsList className="flex h-12 w-full gap-1 rounded-md border bg-main p-1.5 ">
+					<Tabs
+						value={activeSidebarTab}
+						onValueChange={(value) =>
+							setActiveSidebarTab(
+								value as "presets" | "settings" | "edited" | "saved",
+							)
+						}
+						className="flex h-full min-h-0 flex-col"
+					>
+						<TabsList className="flex h-12 w-full gap-1 rounded-md border bg-main p-1.5 lg:hidden">
 							<TabsTrigger
 								value="presets"
 								className="relative h-full w-full cursor-pointer rounded-md text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground lg:text-sm 2xl:text-base"
