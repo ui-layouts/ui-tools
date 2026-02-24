@@ -47,6 +47,7 @@ import {
 	X,
 } from "lucide-react";
 import { useTheme } from "next-themes";
+import Link from "next/link";
 import { parseAsBoolean, parseAsIndex, useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
@@ -240,10 +241,10 @@ function SVGLineDrawGenerator() {
 				<div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:col-span-1 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
 					<div className="space-y-2">
 						{[
-							{ key: "presets", label: "P" },
-							{ key: "settings", label: "S" },
-							{ key: "edited", label: "E" },
-							{ key: "saved", label: "V" },
+							{ key: "presets", label: "Presets" },
+							{ key: "settings", label: "Settings" },
+							{ key: "edited", label: "Edited" },
+							{ key: "saved", label: "Saved" },
 						].map((item) => (
 							<button
 								type="button"
@@ -254,7 +255,7 @@ function SVGLineDrawGenerator() {
 									)
 								}
 								className={cn(
-									"grid h-14 w-full place-items-center rounded-md border font-semibold text-sm transition-colors",
+									"grid h-14 w-full place-items-center rounded-md border px-1 font-semibold text-[11px] transition-colors",
 									activeSidebarTab === item.key
 										? "border-primary bg-primary text-primary-foreground"
 										: "bg-main hover:bg-accent",
@@ -264,9 +265,26 @@ function SVGLineDrawGenerator() {
 							</button>
 						))}
 					</div>
-					<div className="space-y-2">
-						<div className="h-12 rounded-md border bg-main" />
-						<div className="h-12 rounded-md border bg-main" />
+					<div className="space-y-1 rounded-md border bg-main p-1">
+						<p className="px-1 py-1 text-center font-medium text-[10px] text-muted-foreground uppercase tracking-wide">
+							Editors
+						</p>
+						{[
+							{ href: "/svg-line-draw", label: "SVG" },
+							{ href: "/shadows", label: "Shadows" },
+							{ href: "/clip-paths", label: "Clip" },
+							{ href: "/mesh-gradients", label: "Mesh" },
+							{ href: "/background-snippets", label: "BG" },
+							{ href: "/color-lab", label: "Color" },
+						].map((tool) => (
+							<Link
+								key={tool.href}
+								href={tool.href}
+								className="grid h-8 place-items-center rounded-sm border bg-card-bg px-1 text-[10px] hover:bg-accent"
+							>
+								{tool.label}
+							</Link>
+						))}
 					</div>
 				</div>
 
