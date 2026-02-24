@@ -12,6 +12,7 @@ import type React from "react";
 import toast from "react-hot-toast";
 
 interface ShadowPresetsProps {
+	mode: "presets" | "edited" | "saved";
 	activeShadow: ShadowPreset | null;
 	applyPreset: (preset: ShadowPreset) => void;
 	savedShadows: ShadowPreset[];
@@ -25,6 +26,7 @@ interface ShadowPresetsProps {
 }
 
 export default function ShadowPresets({
+	mode,
 	activeShadow,
 	applyPreset,
 	savedShadows,
@@ -42,7 +44,7 @@ export default function ShadowPresets({
 
 	return (
 		<ScrollArea className="h-full rounded-xl border bg-card-bg dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
-			{savedShadows.length > 0 && (
+			{mode === "saved" && savedShadows.length > 0 && (
 				<div className="grid grid-cols-2 gap-2 border-b p-4 xl:grid-cols-3 2xl:grid-cols-3">
 					{savedShadows.map((shadow) => (
 						<motion.div
@@ -112,7 +114,7 @@ export default function ShadowPresets({
 				</div>
 			)}
 
-			{favouriteShadows.length > 0 && (
+			{mode === "edited" && favouriteShadows.length > 0 && (
 				<div className="grid grid-cols-2 gap-2 border-b p-4 xl:grid-cols-3 2xl:grid-cols-3">
 					{favouriteShadows.map((shadow) => (
 						<motion.div
@@ -166,57 +168,70 @@ export default function ShadowPresets({
 				</div>
 			)}
 
-			<div className="grid grid-cols-2 gap-2 p-4 xl:grid-cols-3 2xl:grid-cols-3">
-				{preBuiltShadows.map((shadow, index) => (
-					<motion.div
-						key={shadow.id || `preset_${index}`}
-						className={cn("group relative cursor-pointer rounded-md p-4")}
-						onClick={() => applyPreset(shadow)}
-					>
-						<AnimatePresence mode="wait">
-							{shadow.id === activeShadow?.id && (
-								<motion.div
-									transition={{
-										layout: {
-											duration: 0.2,
-											ease: "easeInOut",
-										},
-									}}
-									layoutId={"animate-bg"}
-									className="absolute top-0 left-0 h-full w-full rounded-lg border bg-main"
-								/>
-							)}
-						</AnimatePresence>
-						<div
-							className={cn(
-								"relative flex h-20 w-full flex-col items-center justify-center rounded-lg text-center text-neutral-700 text-xs transition-transform group-hover:scale-105 dark:bg-neutral-950 dark:text-neutral-400",
-								isDarkMode
-									? shadow.darkTailwind
+			{mode === "presets" && (
+				<div className="grid grid-cols-2 gap-2 p-4 xl:grid-cols-3 2xl:grid-cols-3">
+					{preBuiltShadows.map((shadow, index) => (
+						<motion.div
+							key={shadow.id || `preset_${index}`}
+							className={cn("group relative cursor-pointer rounded-md p-4")}
+							onClick={() => applyPreset(shadow)}
+						>
+							<AnimatePresence mode="wait">
+								{shadow.id === activeShadow?.id && (
+									<motion.div
+										transition={{
+											layout: {
+												duration: 0.2,
+												ease: "easeInOut",
+											},
+										}}
+										layoutId={"animate-bg"}
+										className="absolute top-0 left-0 h-full w-full rounded-lg border bg-main"
+									/>
+								)}
+							</AnimatePresence>
+							<div
+								className={cn(
+									"relative flex h-20 w-full flex-col items-center justify-center rounded-lg text-center text-neutral-700 text-xs transition-transform group-hover:scale-105 dark:bg-neutral-950 dark:text-neutral-400",
+									isDarkMode
 										? shadow.darkTailwind
-										: shadow.tailwind
-									: shadow.tailwind,
-							)}
-						>
-							{shadow.name}
-						</div>
-						<Button
-							variant="ghost"
-							size="icon"
-							onClick={(e) => {
-								e.stopPropagation();
-								toggleFavorite(shadow.id || `preset_${index}`);
-							}}
-							className="absolute top-1 right-1 h-6 w-6 rounded-full bg-background/80 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100"
-						>
-							{isFavorite(shadow.id || `preset_${index}`) ? (
-								<Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-							) : (
-								<Star className="h-3 w-3" />
-							)}
-						</Button>
-					</motion.div>
-				))}
-			</div>
+											? shadow.darkTailwind
+											: shadow.tailwind
+										: shadow.tailwind,
+								)}
+							>
+								{shadow.name}
+							</div>
+							<Button
+								variant="ghost"
+								size="icon"
+								onClick={(e) => {
+									e.stopPropagation();
+									toggleFavorite(shadow.id || `preset_${index}`);
+								}}
+								className="absolute top-1 right-1 h-6 w-6 rounded-full bg-background/80 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100"
+							>
+								{isFavorite(shadow.id || `preset_${index}`) ? (
+									<Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+								) : (
+									<Star className="h-3 w-3" />
+								)}
+							</Button>
+						</motion.div>
+					))}
+				</div>
+			)}
+
+			{mode === "saved" && savedShadows.length === 0 && (
+				<p className="p-4 text-muted-foreground text-sm">
+					No saved shadows yet.
+				</p>
+			)}
+			{mode === "edited" && favouriteShadows.length === 0 && (
+				<p className="p-4 text-muted-foreground text-sm">
+					No edited/favorited shadows yet.
+				</p>
+			)}
 		</ScrollArea>
 	);
 }

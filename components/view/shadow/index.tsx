@@ -106,6 +106,7 @@ export default function ShadowGenerator() {
 		"presets" | "settings" | "edited" | "saved"
 	>("settings");
 	const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+	const [previewBackground, setPreviewBackground] = useState("#ECF0F3");
 	const pathname = usePathname();
 	const router = useRouter();
 
@@ -324,22 +325,38 @@ export default function ShadowGenerator() {
 					</div>
 				</div>
 
-				{!isTab && activeSidebarTab === "settings" && isSidebarExpanded && (
-					<ShadowControls
-						layers={layers}
-						setLayers={setLayers}
-						activeLayerIndex={activeLayerIndex}
-						setActiveLayerIndex={setActiveLayerIndex}
-						globalMasterMode={globalMasterMode}
-						// @ts-ignore
-						setGlobalMasterMode={toggleGlobalMasterMode}
-						globalPositionMode={globalPositionMode}
-						globalBlurMode={globalBlurMode}
-						globalSpreadMode={globalSpreadMode}
-						globalOpacityMode={globalOpacityMode}
-						globalShadowTypeMode={globalShadowTypeMode}
-					/>
-				)}
+				{!isTab &&
+					isSidebarExpanded &&
+					(activeSidebarTab === "settings" ? (
+						<ShadowControls
+							layers={layers}
+							setLayers={setLayers}
+							activeLayerIndex={activeLayerIndex}
+							setActiveLayerIndex={setActiveLayerIndex}
+							globalMasterMode={globalMasterMode}
+							// @ts-ignore
+							setGlobalMasterMode={toggleGlobalMasterMode}
+							globalPositionMode={globalPositionMode}
+							globalBlurMode={globalBlurMode}
+							globalSpreadMode={globalSpreadMode}
+							globalOpacityMode={globalOpacityMode}
+							globalShadowTypeMode={globalShadowTypeMode}
+						/>
+					) : (
+						<ShadowPresets
+							mode={activeSidebarTab}
+							activeShadow={activeShadow}
+							applyPreset={applyPreset}
+							savedShadows={savedShadows}
+							favorites={favorites}
+							toggleFavorite={toggleFavorite}
+							isFavorite={isFavorite}
+							deleteShadow={deleteShadow}
+							currentPresetId={currentPresetId}
+							setCurrentPresetId={setCurrentPresetId}
+							isDarkMode={isDarkMode}
+						/>
+					))}
 
 				<ShadowPreview
 					cssValue={cssValue}
@@ -351,22 +368,9 @@ export default function ShadowGenerator() {
 					setShadowName={setShadowName}
 					saveCurrentShadow={saveCurrentShadow}
 					activeShadow={activeShadow}
+					previewBackground={previewBackground}
+					setPreviewBackground={setPreviewBackground}
 				/>
-
-				{!isMobile && activeSidebarTab !== "settings" && isSidebarExpanded && (
-					<ShadowPresets
-						activeShadow={activeShadow}
-						applyPreset={applyPreset}
-						savedShadows={savedShadows}
-						favorites={favorites}
-						toggleFavorite={toggleFavorite}
-						isFavorite={isFavorite}
-						deleteShadow={deleteShadow}
-						currentPresetId={currentPresetId}
-						setCurrentPresetId={setCurrentPresetId}
-						isDarkMode={isDarkMode}
-					/>
-				)}
 			</div>
 		</>
 	);

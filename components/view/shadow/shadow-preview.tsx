@@ -38,6 +38,8 @@ interface ShadowPreviewProps {
 	setShadowName: React.Dispatch<React.SetStateAction<string>>;
 	saveCurrentShadow: () => void;
 	activeShadow: ShadowPreset | null;
+	previewBackground: string;
+	setPreviewBackground: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function ShadowPreview({
@@ -50,6 +52,8 @@ export default function ShadowPreview({
 	setShadowName,
 	saveCurrentShadow,
 	activeShadow,
+	previewBackground,
+	setPreviewBackground,
 }: ShadowPreviewProps) {
 	const [copiedTailwind, setCopiedTailwind] = useState(false);
 	const [copiedCss, setCopiedCss] = useState(false);
@@ -175,10 +179,31 @@ export default function ShadowPreview({
 						</TooltipProvider>
 					</div>
 
+					<div className="absolute top-2 right-40 z-10 flex items-center gap-2 rounded-md border bg-card-bg p-1.5">
+						{["#ECF0F3", "#111827", "#fef3c7", "#dbeafe"].map((bg) => (
+							<button
+								type="button"
+								key={bg}
+								onClick={() => setPreviewBackground(bg)}
+								className={cn(
+									"h-5 w-5 rounded-full border",
+									previewBackground === bg && "ring-2 ring-primary",
+								)}
+								style={{ backgroundColor: bg }}
+							/>
+						))}
+						<Input
+							value={previewBackground}
+							onChange={(e) => setPreviewBackground(e.target.value)}
+							className="h-7 w-24"
+						/>
+					</div>
+
 					<Card
 						className={cn(
-							"flex h-80 items-center justify-center bg-[#ECF0F3] p-6 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:bg-card-bg",
+							"flex h-80 items-center justify-center p-6 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]",
 						)}
+						style={{ backgroundColor: previewBackground }}
 					>
 						<div
 							className={`h-40 w-40 rounded-lg bg-neutral-100 dark:bg-neutral-950 ${
