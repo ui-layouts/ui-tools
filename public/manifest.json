@@ -1,0 +1,47 @@
+{
+  "name": "UI Tools - Free Web Design Tools",
+  "short_name": "UI Tools",
+  "description": "Free collection of modern web design tools. Generate CSS backgrounds, gradients, shadows, colors, and more. Perfect for developers and designers.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["productivity", "design", "developer", "utilities"],
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/tools-dashboard.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "label": "UI Tools Dashboard - All design tools in one place"
+    },
+    {
+      "src": "/screenshots/color-lab.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "label": "Color Lab - Generate color palettes and themes"
+    },
+    {
+      "src": "/screenshots/mesh-gradients.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "label": "Mesh Gradient Generator - Create fluid gradients"
+    }
+  ]
+}

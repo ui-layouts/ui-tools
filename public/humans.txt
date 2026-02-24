@@ -1,0 +1,37 @@
+/* HUMANS.TXT */
+
+# UI Tools - Free Web Design Tools
+# https://tools.ui-layouts.com
+
+# TEAM
+Creator & Developer: Naymur Hasan
+Twitter: @naymur_dev
+GitHub: https://github.com/naymurdev
+
+# TECHNOLOGY
+Built with: Next.js 15, TypeScript, Tailwind CSS
+Deployment: Vercel
+Design System: Custom with Radix UI primitives
+3D Graphics: React Three Fiber
+
+# THANKS TO
+Open Source Community
+Next.js Team
+Tailwind CSS Team
+Radix UI Team
+React Three Fiber Team
+
+# SITE
+Last updated: 2025
+Standards: HTML5, CSS3, ES2022+
+Accessibility: WCAG 2.1 AA
+
+/* CONTACT */
+Twitter: @naymur_dev
+GitHub: https://github.com/naymurdev
+Website: https://tools.ui-layouts.com
+
+/* RESOURCES */
+Documentation: https://tools.ui-layouts.com/llms.txt
+Sitemap: https://tools.ui-layouts.com/sitemap.xml
+API: Coming soon
