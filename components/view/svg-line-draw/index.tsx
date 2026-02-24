@@ -47,10 +47,13 @@ import {
 	RefreshCcw,
 	Save,
 	Settings2,
+	SidebarClose,
+	SidebarOpen,
 	Trash2,
 	X,
 } from "lucide-react";
 import { useTheme } from "next-themes";
+import { usePathname, useRouter } from "next/navigation";
 import { parseAsBoolean, parseAsIndex, useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
@@ -104,6 +107,9 @@ function SVGLineDrawGenerator() {
 	const [activeSidebarTab, setActiveSidebarTab] = useState<
 		"presets" | "settings" | "edited" | "saved"
 	>("presets");
+	const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+	const pathname = usePathname();
+	const router = useRouter();
 	// Update the default smoothing value to be more appropriate
 	const [settings, setSettings] = useState<AnimationSettings>({
 		width: "100%",
@@ -238,10 +244,15 @@ function SVGLineDrawGenerator() {
 	return (
 		<div className="h-full w-full overflow-hidden p-3">
 			<div
-				className="relative grid h-full min-h-0 grid-cols-12 gap-3"
+				className={cn(
+					"relative grid h-full min-h-0 grid-cols-12 gap-3",
+					isSidebarExpanded
+						? "lg:grid-cols-[88px_320px_minmax(0,1fr)]"
+						: "lg:grid-cols-[88px_0px_minmax(0,1fr)]",
+				)}
 				id="editor"
 			>
-				<div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:col-span-1 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
+				<div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
 					<div className="space-y-2">
 						{[
 							{ key: "presets", label: "Presets", icon: PanelsTopLeft },
@@ -252,11 +263,13 @@ function SVGLineDrawGenerator() {
 							<button
 								type="button"
 								key={item.key}
-								onClick={() =>
+								onClick={() => {
+									setIsSidebarExpanded(true);
+
 									setActiveSidebarTab(
 										item.key as "presets" | "settings" | "edited" | "saved",
-									)
-								}
+									);
+								}}
 								className={cn(
 									"grid h-16 w-full place-items-center rounded-md border px-1 py-1 font-semibold text-[11px] transition-colors",
 									activeSidebarTab === item.key
@@ -269,31 +282,47 @@ function SVGLineDrawGenerator() {
 							</button>
 						))}
 					</div>
-					<div className="rounded-md border bg-main p-1">
-						<select
-							className="h-9 w-full rounded-sm border bg-card-bg px-2 text-[10px]"
-							value="/svg-line-draw"
-							onChange={(e) => {
-								if (e.target.value) {
-									window.location.href = e.target.value;
-								}
-							}}
+					<div className="space-y-2">
+						<Button
+							type="button"
+							variant="outline"
+							size="icon"
+							className="h-9 w-full"
+							onClick={() => setIsSidebarExpanded((prev) => !prev)}
 						>
-							<option value="/svg-line-draw">Go to editor…</option>
-							<option value="/svg-line-draw">SVG Line Draw</option>
-							<option value="/shadows">Shadows</option>
-							<option value="/clip-paths">Clip-paths</option>
-							<option value="/mesh-gradients">Mesh Gradients</option>
-							<option value="/background-snippets">Background Snippets</option>
-							<option value="/color-lab">Color Lab</option>
-						</select>
+							{isSidebarExpanded ? (
+								<SidebarClose className="h-4 w-4" />
+							) : (
+								<SidebarOpen className="h-4 w-4" />
+							)}
+						</Button>
+						<Select
+							value={pathname}
+							onValueChange={(value) => router.push(value)}
+						>
+							<SelectTrigger className="h-9 px-2 text-[10px]">
+								<SelectValue placeholder="Go to editor..." />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="/svg-line-draw">SVG Line Draw</SelectItem>
+								<SelectItem value="/shadows">Shadows</SelectItem>
+								<SelectItem value="/clip-paths">Clip-paths</SelectItem>
+								<SelectItem value="/mesh-gradients">Mesh Gradients</SelectItem>
+								<SelectItem value="/background-snippets">
+									Background Snippets
+								</SelectItem>
+								<SelectItem value="/color-lab">Color Lab</SelectItem>
+							</SelectContent>
+						</Select>
 					</div>
 				</div>
 
 				{/* Left Column - Examples and Animation Settings */}
 				<div
 					className={cn(
-						"inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-3 lg:col-span-3 lg:block 2xl:col-span-2 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0",
+						"inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-3 lg:block dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0",
+						!isSidebarExpanded &&
+							"pointer-events-none w-0 overflow-hidden border-0 p-0 opacity-0",
 					)}
 				>
 					<Tabs
@@ -580,11 +609,7 @@ function SVGLineDrawGenerator() {
 				</div>
 
 				{/* Right Column - Preview and Drawing Canvas */}
-				<div
-					className={cn(
-						"relative col-span-12 h-full min-h-0 lg:col-span-8 2xl:col-span-9",
-					)}
-				>
+				<div className={cn("relative col-span-12 h-full min-h-0 lg:col-auto")}>
 					{/* Preview Section */}
 					<Card className="flex h-full min-h-0 flex-col overflow-hidden">
 						<CardHeader className="shrink-0">
