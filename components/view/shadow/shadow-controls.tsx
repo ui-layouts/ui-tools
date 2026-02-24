@@ -152,7 +152,7 @@ export default function ShadowControls({
 	};
 
 	return (
-		<ScrollArea className="col-span-4 max-h-[95vh] rounded-xl border bg-card-bg p-3 xl:col-span-3 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
+		<ScrollArea className="h-full rounded-xl border bg-card-bg p-3 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
 			<div className="flex items-center justify-between pb-4">
 				<h1 className="text-xl">Shadow Controls</h1>
 				<Tooltip>

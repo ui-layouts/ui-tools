@@ -41,7 +41,7 @@ export default function ShadowPresets({
 	);
 
 	return (
-		<ScrollArea className="col-span-5 max-h-[95vh] rounded-xl border bg-card-bg lg:col-span-4 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
+		<ScrollArea className="h-full rounded-xl border bg-card-bg dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
 			{savedShadows.length > 0 && (
 				<div className="grid grid-cols-2 gap-2 border-b p-4 xl:grid-cols-3 2xl:grid-cols-3">
 					{savedShadows.map((shadow) => (

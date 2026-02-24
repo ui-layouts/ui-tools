@@ -71,7 +71,7 @@ export default function ShadowPreview({
 	};
 
 	return (
-		<ScrollArea className="col-span-12 max-h-[95vh] w-full md:col-span-7 lg:col-span-4 xl:col-span-5">
+		<ScrollArea className="h-full w-full">
 			<Tabs defaultValue="preview" className="relative h-full w-full">
 				<TabsList className="absolute top-1.5 right-1.5 z-10 bg-neutral-950 dark:bg-black">
 					<TabsTrigger

@@ -6,14 +6,15 @@ import type React from "react";
 
 function Toolslayout({ children }: { children: React.ReactNode }) {
 	const pathname = usePathname();
-	const isLineDraw = pathname === "/svg-line-draw";
+	const isFullPlayground =
+		pathname === "/svg-line-draw" || pathname === "/shadows";
 
 	return (
 		<div className="h-screen overflow-hidden bg-white text-black dark:bg-black dark:text-white">
-			{!isLineDraw && <ToolsHeader />}
+			{!isFullPlayground && <ToolsHeader />}
 			<main
 				className={
-					isLineDraw
+					isFullPlayground
 						? "h-full overflow-hidden"
 						: "h-full overflow-hidden px-3 pt-20 pb-3 xl:px-6"
 				}

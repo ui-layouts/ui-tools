@@ -1,14 +1,30 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { preBuiltShadows } from "@/config/shadow-data";
 import { useShadowStore } from "@/store/useShadowStore";
 import type { ShadowLayer, ShadowPreset } from "@/types/shadow";
+import {
+	Bookmark,
+	Layers,
+	PanelsTopLeft,
+	Settings2,
+	SidebarClose,
+	SidebarOpen,
+} from "lucide-react";
 import { useTheme } from "next-themes";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ShadowControls from "./shadow-controls";
-import ShadowGallery from "./shadow-gallery";
 import ShadowPresets from "./shadow-presets";
 import ShadowPreview from "./shadow-preview";
 
@@ -86,6 +102,12 @@ export default function ShadowGenerator() {
 	const [globalSpreadMode, setGlobalSpreadMode] = useState(false);
 	const [globalOpacityMode, setGlobalOpacityMode] = useState(false);
 	const [globalMasterMode, setGlobalMasterMode] = useState(false);
+	const [activeSidebarTab, setActiveSidebarTab] = useState<
+		"presets" | "settings" | "edited" | "saved"
+	>("settings");
+	const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+	const pathname = usePathname();
+	const router = useRouter();
 
 	const toggleGlobalMasterMode = (enabled: boolean) => {
 		setGlobalMasterMode(enabled);
@@ -230,11 +252,6 @@ export default function ShadowGenerator() {
 
 	return (
 		<>
-			<ShadowGallery
-				applyPreset={applyPreset}
-				activeShadow={activeShadow}
-				isDarkMode={isDarkMode}
-			/>
 			{isMobile && (
 				<p className="pb-2 text-center text-primary/60">
 					Please use a desktop/laptop to view the Editor.
@@ -242,9 +259,72 @@ export default function ShadowGenerator() {
 			)}
 			<div
 				id="editor"
-				className="relative z-10 mx-auto grid grid-cols-12 gap-4 px-4 pb-5 xl:container sm:pt-5 2xl:px-0"
+				className="relative z-10 grid h-full min-h-0 grid-cols-12 gap-3 p-3 lg:grid-cols-[88px_320px_minmax(0,1fr)]"
 			>
-				{!isTab && (
+				<div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
+					<div className="space-y-2">
+						{[
+							{ key: "presets", label: "Presets", icon: PanelsTopLeft },
+							{ key: "settings", label: "Settings", icon: Settings2 },
+							{ key: "edited", label: "Edited", icon: Layers },
+							{ key: "saved", label: "Saved", icon: Bookmark },
+						].map((item) => (
+							<button
+								type="button"
+								key={item.key}
+								onClick={() => {
+									setIsSidebarExpanded(true);
+									setActiveSidebarTab(
+										item.key as "presets" | "settings" | "edited" | "saved",
+									);
+								}}
+								className={`grid h-16 w-full place-items-center rounded-md border px-1 py-1 font-semibold text-[11px] transition-colors ${
+									activeSidebarTab === item.key
+										? "border-primary bg-primary text-primary-foreground"
+										: "bg-main hover:bg-accent"
+								}`}
+							>
+								<item.icon className="mb-0.5 h-4 w-4" />
+								<span>{item.label}</span>
+							</button>
+						))}
+					</div>
+					<div className="space-y-2">
+						<Button
+							type="button"
+							variant="outline"
+							size="icon"
+							className="h-9 w-full"
+							onClick={() => setIsSidebarExpanded((prev) => !prev)}
+						>
+							{isSidebarExpanded ? (
+								<SidebarClose className="h-4 w-4" />
+							) : (
+								<SidebarOpen className="h-4 w-4" />
+							)}
+						</Button>
+						<Select
+							value={pathname}
+							onValueChange={(value) => router.push(value)}
+						>
+							<SelectTrigger className="h-9 px-2 text-[10px]">
+								<SelectValue placeholder="Go to editor..." />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="/svg-line-draw">SVG Line Draw</SelectItem>
+								<SelectItem value="/shadows">Shadows</SelectItem>
+								<SelectItem value="/clip-paths">Clip-paths</SelectItem>
+								<SelectItem value="/mesh-gradients">Mesh Gradients</SelectItem>
+								<SelectItem value="/background-snippets">
+									Background Snippets
+								</SelectItem>
+								<SelectItem value="/color-lab">Color Lab</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+				</div>
+
+				{!isTab && activeSidebarTab === "settings" && isSidebarExpanded && (
 					<ShadowControls
 						layers={layers}
 						setLayers={setLayers}
@@ -273,7 +353,7 @@ export default function ShadowGenerator() {
 					activeShadow={activeShadow}
 				/>
 
-				{!isMobile && (
+				{!isMobile && activeSidebarTab !== "settings" && isSidebarExpanded && (
 					<ShadowPresets
 						activeShadow={activeShadow}
 						applyPreset={applyPreset}
