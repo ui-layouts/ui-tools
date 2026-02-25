@@ -455,7 +455,7 @@ export default function ClipPathGenerator() {
 					</div>
 				)}
 
-				<div className="col-span-12 h-full min-h-0 md:col-span-8 lg:col-span-8 xl:col-span-9">
+				<div className="col-span-12 h-full min-h-0 lg:col-auto">
 					<Card className="relative h-full border bg-card-bg dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
 						<CardContent className="flex h-full min-h-0 flex-col gap-3 p-4">
 							<div className="min-h-0 flex-1 space-y-2">
