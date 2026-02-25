@@ -25,7 +25,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { ShadowPreset } from "@/types/shadow";
 import { Check, Copy, Save } from "lucide-react";
-import { useState } from "react";
+import { useId, useState } from "react";
 import toast from "react-hot-toast";
 
 interface ShadowPreviewProps {
@@ -63,6 +63,7 @@ export default function ShadowPreview({
 }: ShadowPreviewProps) {
 	const [copiedTailwind, setCopiedTailwind] = useState(false);
 	const [copiedCss, setCopiedCss] = useState(false);
+	const backgroundPickerId = useId();
 
 	const twValue =
 		shadowMode === "text"
@@ -215,11 +216,25 @@ export default function ShadowPreview({
 								style={{ backgroundColor: bg }}
 							/>
 						))}
-						<Input
-							value={previewBackground}
-							onChange={(e) => setPreviewBackground(e.target.value)}
-							className="h-7 w-24"
-						/>
+						<label
+							htmlFor={backgroundPickerId}
+							className="group flex h-8 items-center gap-2 rounded-md border bg-black px-2 text-white text-xs shadow-sm"
+						>
+							<span
+								className="h-4 w-4 rounded border border-white/50"
+								style={{ backgroundColor: previewBackground }}
+							/>
+							<span className="font-medium uppercase">{previewBackground}</span>
+							<input
+								id={backgroundPickerId}
+								type="color"
+								value={previewBackground}
+								onChange={(e) =>
+									setPreviewBackground(e.target.value.toUpperCase())
+								}
+								className="sr-only"
+							/>
+						</label>
 					</div>
 
 					<Card
