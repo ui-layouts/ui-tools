@@ -239,27 +239,29 @@ export default function ShadowPreview({
 								className="sr-only"
 							/>
 						</label>
-						<label
-							htmlFor={`${backgroundPickerId}-surface`}
-							className="group flex h-8 items-center gap-2 rounded-md border bg-card px-2 text-foreground text-xs shadow-sm"
-						>
-							<span
-								className="h-4 w-4 rounded border border-border"
-								style={{ backgroundColor: previewSurfaceColor }}
-							/>
-							<span className="font-medium uppercase">
-								Surface {previewSurfaceColor}
-							</span>
-							<input
-								id={`${backgroundPickerId}-surface`}
-								type="color"
-								value={previewSurfaceColor}
-								onChange={(e) =>
-									setPreviewSurfaceColor(e.target.value.toUpperCase())
-								}
-								className="sr-only"
-							/>
-						</label>
+						{shadowMode === "box" && (
+							<label
+								htmlFor={`${backgroundPickerId}-surface`}
+								className="group flex h-8 items-center gap-2 rounded-md border bg-card px-2 text-foreground text-xs shadow-sm"
+							>
+								<span
+									className="h-4 w-4 rounded border border-border"
+									style={{ backgroundColor: previewSurfaceColor }}
+								/>
+								<span className="font-medium uppercase">
+									Surface {previewSurfaceColor}
+								</span>
+								<input
+									id={`${backgroundPickerId}-surface`}
+									type="color"
+									value={previewSurfaceColor}
+									onChange={(e) =>
+										setPreviewSurfaceColor(e.target.value.toUpperCase())
+									}
+									className="sr-only"
+								/>
+							</label>
+						)}
 					</div>
 
 					<Card
@@ -267,10 +269,7 @@ export default function ShadowPreview({
 						style={{ backgroundColor: previewBackground }}
 					>
 						{shadowMode === "text" ? (
-							<div
-								className="rounded-lg border px-8 py-6"
-								style={{ backgroundColor: previewSurfaceColor }}
-							>
+							<div className="rounded-lg border bg-card px-8 py-6">
 								<p
 									className="font-bold text-5xl"
 									style={{ textShadow: textShadowValue }}
@@ -358,7 +357,7 @@ export default function ShadowPreview({
 									<CopyToClipboard text={cssOutputValue} />
 									<code className="relative block overflow-x-auto rounded-md border bg-main p-3 text-gray-700 text-sm dark:text-gray-300">
 										{shadowMode === "text"
-											? `<div style={{ backgroundColor: "${previewSurfaceColor}" }}><h2 style={{ textShadow: "${textShadowValue}" }}>Text Shadow</h2></div>`
+											? `<h2 style={{ textShadow: "${textShadowValue}" }}>Text Shadow</h2>`
 											: `<div style={{ boxShadow: \"${cssValue}\" }}>Your content here</div>`}
 									</code>
 								</div>
