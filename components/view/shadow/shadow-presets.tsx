@@ -71,9 +71,6 @@ export default function ShadowPresets({
 								>
 									Shadow
 								</p>
-								<code className="mt-2 block truncate text-[11px] text-muted-foreground">
-									{preset.tailwindV4}
-								</code>
 							</button>
 						))}
 					</div>

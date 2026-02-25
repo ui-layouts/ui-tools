@@ -218,10 +218,10 @@ export default function ShadowPreview({
 						))}
 						<label
 							htmlFor={backgroundPickerId}
-							className="group flex h-8 items-center gap-2 rounded-md border bg-black px-2 text-white text-xs shadow-sm"
+							className="group flex h-8 items-center gap-2 rounded-md border bg-card px-2 text-foreground text-xs shadow-sm"
 						>
 							<span
-								className="h-4 w-4 rounded border border-white/50"
+								className="h-4 w-4 rounded border border-border"
 								style={{ backgroundColor: previewBackground }}
 							/>
 							<span className="font-medium uppercase">{previewBackground}</span>

@@ -1567,4 +1567,31 @@ export const preBuiltTextShadows = [
 		tailwindV4:
 			"[text-shadow:1px_1px_0_rgba(0,0,0,0.15),2px_2px_0_rgba(0,0,0,0.14),3px_3px_0_rgba(0,0,0,0.13),4px_4px_0_rgba(0,0,0,0.12),5px_5px_0_rgba(0,0,0,0.11)]",
 	},
+	{
+		id: "text-5",
+		name: "Embossed",
+		textShadow: "1px 1px 0 rgba(255,255,255,0.6), -1px -1px 0 rgba(0,0,0,0.2)",
+		tailwindV4:
+			"[text-shadow:1px_1px_0_rgba(255,255,255,0.6),-1px_-1px_0_rgba(0,0,0,0.2)]",
+	},
+	{
+		id: "text-6",
+		name: "Glow Punch",
+		textShadow:
+			"0 0 4px rgba(255,255,255,0.85), 0 0 14px rgba(236,72,153,0.55), 0 0 28px rgba(236,72,153,0.35)",
+		tailwindV4:
+			"[text-shadow:0_0_4px_rgba(255,255,255,0.85),0_0_14px_rgba(236,72,153,0.55),0_0_28px_rgba(236,72,153,0.35)]",
+	},
+	{
+		id: "text-7",
+		name: "Crisp Offset",
+		textShadow: "2px 2px 0 rgba(17,24,39,0.35)",
+		tailwindV4: "[text-shadow:2px_2px_0_rgba(17,24,39,0.35)]",
+	},
+	{
+		id: "text-8",
+		name: "Soft Cloud",
+		textShadow: "0 8px 20px rgba(15,23,42,0.22)",
+		tailwindV4: "[text-shadow:0_8px_20px_rgba(15,23,42,0.22)]",
+	},
 ] as const;
