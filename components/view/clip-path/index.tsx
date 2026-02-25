@@ -6,6 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import CopyToClipboard from "@/components/ui/copy-to-clipboard";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { cn } from "@/lib/utils";
@@ -62,6 +69,7 @@ export default function ClipPathGenerator() {
 	>([]);
 	const [historyIndex, setHistoryIndex] = useState(-1);
 	const [draggedPointIndex, setDraggedPointIndex] = useState(-1);
+	const [exportOpen, setExportOpen] = useState(false);
 
 	const editorRef = useRef<SVGSVGElement>(null);
 
@@ -431,13 +439,28 @@ export default function ClipPathGenerator() {
 								</p>
 							</div>
 
-							<div className="shrink-0 rounded-md border bg-card p-2">
-								<CodeOutput
-									selectedShape={selectedShape}
-									currentEditPath={currentEditPath || selectedShape.path}
-									editMode={editMode}
-									showOnlyCopyButton={isMobile}
-								/>
+							<div className="relative z-20 flex shrink-0 items-center justify-between rounded-md border bg-card p-2">
+								<p className="font-medium text-sm">Export clip-path code</p>
+								<Sheet open={exportOpen} onOpenChange={setExportOpen}>
+									<SheetTrigger asChild>
+										<Button size="sm">Open Export</Button>
+									</SheetTrigger>
+									<SheetContent
+										side="right"
+										className="w-[560px] max-w-[95vw] p-0"
+									>
+										<SheetHeader className="border-b px-4 py-3 text-left">
+											<SheetTitle>Export</SheetTitle>
+										</SheetHeader>
+										<div className="h-[calc(100vh-64px)] overflow-y-auto p-4">
+											<CodeOutput
+												selectedShape={selectedShape}
+												currentEditPath={currentEditPath || selectedShape.path}
+												editMode={editMode}
+											/>
+										</div>
+									</SheetContent>
+								</Sheet>
 							</div>
 						</CardContent>
 					</Card>
