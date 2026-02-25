@@ -7,18 +7,35 @@ import { Card, CardContent } from "@/components/ui/card";
 import CopyToClipboard from "@/components/ui/copy-to-clipboard";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import {
 	Sheet,
 	SheetContent,
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
-import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { cn } from "@/lib/utils";
 import { parseSvgPath, pointsToSvgPath } from "@/lib/utils";
 import { useClipPathStore } from "@/store/clipPath-storage";
-import { TabsTrigger } from "@radix-ui/react-tabs";
+import {
+	Bookmark,
+	Layers,
+	Moon,
+	PanelsTopLeft,
+	Settings2,
+	SidebarClose,
+	SidebarOpen,
+	Sun,
+} from "lucide-react";
+import { useTheme } from "next-themes";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CodeOutput } from "./code-output";
 import { CustomShapeForm } from "./custom-shape-form";
@@ -36,6 +53,10 @@ const SAMPLE_IMAGES = [
 ];
 
 export default function ClipPathGenerator() {
+	const { resolvedTheme, setTheme } = useTheme();
+	const pathname = usePathname();
+	const router = useRouter();
+	const isTab = useMediaQuery("(max-width:1024px)");
 	const isMobile = useMediaQuery("(max-width:768px)");
 
 	const {
@@ -70,6 +91,10 @@ export default function ClipPathGenerator() {
 	const [historyIndex, setHistoryIndex] = useState(-1);
 	const [draggedPointIndex, setDraggedPointIndex] = useState(-1);
 	const [exportOpen, setExportOpen] = useState(false);
+	const [activeSidebarTab, setActiveSidebarTab] = useState<
+		"presets" | "settings" | "edited" | "saved"
+	>("presets");
+	const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
 
 	const editorRef = useRef<SVGSVGElement>(null);
 
@@ -242,173 +267,197 @@ export default function ClipPathGenerator() {
 				</p>
 			)}
 
-			<div id="editor" className="grid h-full min-h-0 grid-cols-12 gap-3 p-3">
-				{/* Left column: Controls */}
+			<div
+				id="editor"
+				className={`grid h-full min-h-0 grid-cols-12 gap-3 p-3 ${
+					isSidebarExpanded
+						? "lg:grid-cols-[74px_340px_minmax(0,1fr)]"
+						: "lg:grid-cols-[74px_minmax(0,1fr)]"
+				}`}
+			>
 				{!isMobile && (
-					<Card className="col-span-4 h-full min-h-0 bg-card-bg xl:col-span-3 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
-						<CardContent className="h-full min-h-0 p-2">
-							<Tabs defaultValue="shapes" className="h-full min-h-0">
-								<TabsList className="flex h-12 w-full gap-1 rounded-md border bg-card p-1.5 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
-									<TabsTrigger
-										value="shapes"
-										className="relative h-full w-full cursor-pointer rounded-md data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-									>
-										<span className="relative z-[2] capitalize">Shapes</span>
-									</TabsTrigger>
-									<TabsTrigger
-										value="editedShapes"
-										className="relative h-full w-full cursor-pointer rounded-md data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-									>
-										<span className="relative z-[2] capitalize">Edited</span>
-									</TabsTrigger>
-									<TabsTrigger
-										value="custom"
-										className="relative h-full w-full cursor-pointer rounded-md p-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-									>
-										<span className="relative z-[2] capitalize">Custom</span>
-									</TabsTrigger>
-								</TabsList>
-
-								<TabsContent value="shapes" className="h-full min-h-0 p-0">
-									<ScrollArea
-										className={cn(
-											"mb-4 h-full rounded-lg border ",
-											editMode && "h-60",
-										)}
-									>
-										<ShapeGrid
-											className="bg-main"
-											shapes={INITIAL_CLIP_PATHS}
-											selectedShapeId={selectedShapeId}
-											onSelectShape={setSelectedShapeId}
-											disabled={editMode}
-										/>
-									</ScrollArea>
-
-									{!editMode && (
-										<Button
-											variant="default"
-											className="w-full"
-											onClick={() => enterEditMode()}
-											disabled={!selectedShape}
-										>
-											Edit Selected Shape
-										</Button>
-									)}
-
-									{editMode && (
-										<EditControls
-											historyIndex={historyIndex}
-											onSave={() => exitEditMode(true)}
-											onCancel={() => exitEditMode(false)}
-										/>
-									)}
-								</TabsContent>
-
-								<TabsContent
-									value="editedShapes"
-									className="h-full min-h-0 rounded-md border bg-background p-3"
+					<div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
+						<div className="space-y-2">
+							{[
+								{ key: "presets", label: "Presets", icon: PanelsTopLeft },
+								{ key: "settings", label: "Settings", icon: Settings2 },
+								{ key: "edited", label: "Edited", icon: Layers },
+								{ key: "saved", label: "Saved", icon: Bookmark },
+							].map((item) => (
+								<button
+									type="button"
+									key={item.key}
+									onClick={() => {
+										setIsSidebarExpanded(true);
+										setActiveSidebarTab(
+											item.key as "presets" | "settings" | "edited" | "saved",
+										);
+									}}
+									className={`grid h-16 w-full place-items-center rounded-md border px-1 py-1 font-semibold text-[11px] transition-colors ${
+										activeSidebarTab === item.key
+											? "border-primary bg-primary text-primary-foreground"
+											: "bg-main hover:bg-accent"
+									}`}
 								>
-									{editedShapes.length > 0 ? (
-										<>
-											<ScrollArea
-												className={cn(
-													"bg h-full rounded-md",
-													editMode && "h-40 opacity-50",
-												)}
-											>
-												<ShapeGrid
-													shapes={editedShapes}
-													selectedShapeId={selectedShapeId}
-													onSelectShape={setSelectedShapeId}
-													onEditShape={enterEditMode}
-													onDeleteShape={deleteShape}
-													disabled={editMode}
-													compact
-												/>
-											</ScrollArea>
+									<item.icon className="mb-0.5 h-4 w-4" />
+									<span>{item.label}</span>
+								</button>
+							))}
+						</div>
+						<div className="space-y-2">
+							<Button
+								type="button"
+								variant="outline"
+								size="icon"
+								className="h-9 w-full"
+								onClick={() =>
+									setTheme(resolvedTheme === "dark" ? "light" : "dark")
+								}
+							>
+								{resolvedTheme === "dark" ? (
+									<Sun className="h-4 w-4" />
+								) : (
+									<Moon className="h-4 w-4" />
+								)}
+							</Button>
+							<Button
+								type="button"
+								variant="outline"
+								size="icon"
+								className="h-9 w-full"
+								onClick={() => setIsSidebarExpanded((prev) => !prev)}
+							>
+								{isSidebarExpanded ? (
+									<SidebarClose className="h-4 w-4" />
+								) : (
+									<SidebarOpen className="h-4 w-4" />
+								)}
+							</Button>
+							<Select
+								value={pathname}
+								onValueChange={(value) => router.push(value)}
+							>
+								<SelectTrigger className="h-9 px-2 text-[10px]">
+									<SelectValue placeholder="Go to editor..." />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="/svg-line-draw">SVG Line Draw</SelectItem>
+									<SelectItem value="/shadows">Shadows</SelectItem>
+									<SelectItem value="/clip-paths">Clip-paths</SelectItem>
+									<SelectItem value="/mesh-gradients">
+										Mesh Gradients
+									</SelectItem>
+									<SelectItem value="/background-snippets">
+										Background Snippets
+									</SelectItem>
+									<SelectItem value="/color-lab">Color Lab</SelectItem>
+								</SelectContent>
+							</Select>
+						</div>
+					</div>
+				)}
 
-											{editMode && (
-												<EditControls
-													historyIndex={historyIndex}
-													onSave={() => exitEditMode(true)}
-													onCancel={() => exitEditMode(false)}
-												/>
-											)}
-										</>
-									) : (
-										<p>No Edited Shapes Found</p>
-									)}
-								</TabsContent>
+				{!isTab && isSidebarExpanded && (
+					<div className="h-full min-h-0 rounded-xl border bg-card-bg p-2 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
+						{activeSidebarTab === "presets" && (
+							<div className="flex h-full min-h-0 flex-col gap-2">
+								<ScrollArea className="min-h-0 flex-1 rounded-md border bg-main">
+									<ShapeGrid
+										className="bg-main"
+										shapes={INITIAL_CLIP_PATHS}
+										selectedShapeId={selectedShapeId}
+										onSelectShape={setSelectedShapeId}
+										disabled={editMode}
+									/>
+								</ScrollArea>
+								{!editMode ? (
+									<Button
+										className="w-full"
+										onClick={() => enterEditMode()}
+										disabled={!selectedShape}
+									>
+										Edit Selected Shape
+									</Button>
+								) : (
+									<EditControls
+										historyIndex={historyIndex}
+										onSave={() => exitEditMode(true)}
+										onCancel={() => exitEditMode(false)}
+									/>
+								)}
+							</div>
+						)}
 
-								<TabsContent
-									value="custom"
-									className="h-full min-h-0 rounded-md border bg-background p-2"
-								>
-									<ScrollArea className={cn("bg h-full rounded-md")}>
-										<div
-											className={cn(
-												"",
-												editMode ? "h-32 overflow-hidden opacity-50" : "",
-											)}
-										>
-											<CustomShapeForm
-												customName={customName}
-												setCustomName={setCustomName}
-												customPath={customPath}
-												setCustomPath={setCustomPath}
-												onAddCustomShape={() =>
-													addCustomShape(customPath, customName)
-												}
-												disabled={editMode}
-											/>
-										</div>
+						{activeSidebarTab === "settings" && (
+							<ScrollArea className="h-full rounded-md border bg-main p-3">
+								<div className="space-y-4">
+									<ImageSelector
+										selectedImage={selectedImage}
+										setSelectedImage={setSelectedImage}
+										sampleImages={SAMPLE_IMAGES}
+										uploadedImages={uploadedImages}
+										onImageUpload={handleImageUpload}
+										disabled={editMode}
+									/>
+									<CustomShapeForm
+										customName={customName}
+										setCustomName={setCustomName}
+										customPath={customPath}
+										setCustomPath={setCustomPath}
+										onAddCustomShape={() =>
+											addCustomShape(customPath, customName)
+										}
+										disabled={editMode}
+									/>
+								</div>
+							</ScrollArea>
+						)}
 
-										{/* Custom shapes list */}
-										{customShapes.length > 0 && (
-											<>
-												<h3 className="mt-6 font-medium text-lg">
-													Custom Shapes
-												</h3>
+						{activeSidebarTab === "edited" && (
+							<ScrollArea className="h-full rounded-md border bg-main p-3">
+								{editedShapes.length > 0 ? (
+									<ShapeGrid
+										shapes={editedShapes}
+										selectedShapeId={selectedShapeId}
+										onSelectShape={setSelectedShapeId}
+										onEditShape={enterEditMode}
+										onDeleteShape={deleteShape}
+										disabled={editMode}
+										compact
+									/>
+								) : (
+									<p className="text-muted-foreground text-sm">
+										No Edited Shapes Found
+									</p>
+								)}
+							</ScrollArea>
+						)}
 
-												<ShapeGrid
-													shapes={customShapes}
-													selectedShapeId={selectedShapeId}
-													onSelectShape={setSelectedShapeId}
-													onEditShape={enterEditMode}
-													onDeleteShape={deleteShape}
-													disabled={editMode}
-													compact
-												/>
-
-												{editMode && (
-													<EditControls
-														historyIndex={historyIndex}
-														onSave={() => exitEditMode(true)}
-														onCancel={() => exitEditMode(false)}
-													/>
-												)}
-											</>
-										)}
-									</ScrollArea>
-								</TabsContent>
-							</Tabs>
-						</CardContent>
-					</Card>
+						{activeSidebarTab === "saved" && (
+							<ScrollArea className="h-full rounded-md border bg-main p-3">
+								{customShapes.length > 0 ? (
+									<ShapeGrid
+										shapes={customShapes}
+										selectedShapeId={selectedShapeId}
+										onSelectShape={setSelectedShapeId}
+										onEditShape={enterEditMode}
+										onDeleteShape={deleteShape}
+										disabled={editMode}
+										compact
+									/>
+								) : (
+									<p className="text-muted-foreground text-sm">
+										No Custom/Saved Shapes Found
+									</p>
+								)}
+							</ScrollArea>
+						)}
+					</div>
 				)}
 
 				<div className="col-span-12 h-full min-h-0 md:col-span-8 lg:col-span-8 xl:col-span-9">
 					<Card className="relative h-full border bg-card-bg dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
 						<CardContent className="flex h-full min-h-0 flex-col gap-3 p-4">
-							<ImageSelector
-								selectedImage={selectedImage}
-								setSelectedImage={setSelectedImage}
-								sampleImages={SAMPLE_IMAGES}
-								uploadedImages={uploadedImages}
-								onImageUpload={handleImageUpload}
-								disabled={editMode}
-							/>
-
 							<div className="min-h-0 flex-1 space-y-2">
 								<ShapePreview
 									selectedShape={selectedShape}
