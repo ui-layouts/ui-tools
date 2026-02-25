@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { preBuiltShadows, preBuiltTextShadows } from "@/config/shadow-data";
 import { cn } from "@/lib/utils";
-import type { ShadowPreset } from "@/types/shadow";
+import type { ShadowLayer, ShadowPreset } from "@/types/shadow";
 import { Star, Trash } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import type React from "react";
@@ -24,8 +24,8 @@ interface ShadowPresetsProps {
 	currentPresetId: string | null;
 	setCurrentPresetId: React.Dispatch<React.SetStateAction<string | null>>;
 	isDarkMode: boolean;
-	textShadowValue: string;
-	setTextShadowValue: React.Dispatch<React.SetStateAction<string>>;
+	setLayers: React.Dispatch<React.SetStateAction<ShadowLayer[]>>;
+	setActiveLayerIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function ShadowPresets({
@@ -41,12 +41,24 @@ export default function ShadowPresets({
 	currentPresetId,
 	setCurrentPresetId,
 	isDarkMode,
-	textShadowValue,
-	setTextShadowValue,
+	setLayers,
+	setActiveLayerIndex,
 }: ShadowPresetsProps) {
 	const favouriteShadows = preBuiltShadows.filter((s) =>
 		favorites.includes(s.id),
 	);
+
+	const activeTextShadow = layersToTextShadow(activeShadow?.layers || []);
+
+	function layersToTextShadow(layers: readonly ShadowLayer[]) {
+		return layers
+			.filter((layer) => layer.isVisible !== false)
+			.map((layer) => {
+				const rgba = `rgba(${Number.parseInt(layer.color.slice(1, 3), 16)},${Number.parseInt(layer.color.slice(3, 5), 16)},${Number.parseInt(layer.color.slice(5, 7), 16)},${layer.opacity / 100})`;
+				return `${layer.offsetX}px ${layer.offsetY}px ${layer.blur}px ${rgba}`;
+			})
+			.join(", ");
+	}
 
 	if (shadowMode === "text") {
 		return (
@@ -57,10 +69,13 @@ export default function ShadowPresets({
 							<button
 								type="button"
 								key={preset.id}
-								onClick={() => setTextShadowValue(preset.textShadow)}
+								onClick={() => {
+									setLayers(preset.layers.map((layer) => ({ ...layer })));
+									setActiveLayerIndex(0);
+								}}
 								className={cn(
 									"rounded-lg border bg-main p-4 text-left transition hover:border-primary",
-									textShadowValue === preset.textShadow &&
+									activeTextShadow === layersToTextShadow(preset.layers) &&
 										"border-primary ring-1 ring-primary",
 								)}
 							>

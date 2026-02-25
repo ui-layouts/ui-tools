@@ -33,7 +33,6 @@ interface ShadowPreviewProps {
 	cssValue: string;
 	tailwindClass: string;
 	textShadowValue: string;
-	setTextShadowValue: React.Dispatch<React.SetStateAction<string>>;
 	isRemoveShadow: boolean;
 	setIsRemoveShadow: React.Dispatch<React.SetStateAction<boolean>>;
 	isEdited: boolean;
@@ -43,6 +42,8 @@ interface ShadowPreviewProps {
 	activeShadow: ShadowPreset | null;
 	previewBackground: string;
 	setPreviewBackground: React.Dispatch<React.SetStateAction<string>>;
+	previewSurfaceColor: string;
+	setPreviewSurfaceColor: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function ShadowPreview({
@@ -50,7 +51,6 @@ export default function ShadowPreview({
 	cssValue,
 	tailwindClass,
 	textShadowValue,
-	setTextShadowValue,
 	isRemoveShadow,
 	setIsRemoveShadow,
 	isEdited,
@@ -60,6 +60,8 @@ export default function ShadowPreview({
 	activeShadow,
 	previewBackground,
 	setPreviewBackground,
+	previewSurfaceColor,
+	setPreviewSurfaceColor,
 }: ShadowPreviewProps) {
 	const [copiedTailwind, setCopiedTailwind] = useState(false);
 	const [copiedCss, setCopiedCss] = useState(false);
@@ -224,13 +226,36 @@ export default function ShadowPreview({
 								className="h-4 w-4 rounded border border-border"
 								style={{ backgroundColor: previewBackground }}
 							/>
-							<span className="font-medium uppercase">{previewBackground}</span>
+							<span className="font-medium uppercase">
+								Canvas {previewBackground}
+							</span>
 							<input
 								id={backgroundPickerId}
 								type="color"
 								value={previewBackground}
 								onChange={(e) =>
 									setPreviewBackground(e.target.value.toUpperCase())
+								}
+								className="sr-only"
+							/>
+						</label>
+						<label
+							htmlFor={`${backgroundPickerId}-surface`}
+							className="group flex h-8 items-center gap-2 rounded-md border bg-card px-2 text-foreground text-xs shadow-sm"
+						>
+							<span
+								className="h-4 w-4 rounded border border-border"
+								style={{ backgroundColor: previewSurfaceColor }}
+							/>
+							<span className="font-medium uppercase">
+								Surface {previewSurfaceColor}
+							</span>
+							<input
+								id={`${backgroundPickerId}-surface`}
+								type="color"
+								value={previewSurfaceColor}
+								onChange={(e) =>
+									setPreviewSurfaceColor(e.target.value.toUpperCase())
 								}
 								className="sr-only"
 							/>
@@ -242,7 +267,10 @@ export default function ShadowPreview({
 						style={{ backgroundColor: previewBackground }}
 					>
 						{shadowMode === "text" ? (
-							<div className="rounded-lg border bg-card px-8 py-6">
+							<div
+								className="rounded-lg border px-8 py-6"
+								style={{ backgroundColor: previewSurfaceColor }}
+							>
 								<p
 									className="font-bold text-5xl"
 									style={{ textShadow: textShadowValue }}
@@ -252,23 +280,17 @@ export default function ShadowPreview({
 							</div>
 						) : (
 							<div
-								className={`h-40 w-40 rounded-lg bg-neutral-100 dark:bg-neutral-950 ${
+								className={`h-40 w-40 rounded-lg ${
 									isRemoveShadow ? "border dark:border-none" : ""
 								}`}
-								style={{ boxShadow: isRemoveShadow ? undefined : cssValue }}
+								style={{
+									backgroundColor: previewSurfaceColor,
+									boxShadow: isRemoveShadow ? undefined : cssValue,
+								}}
 							/>
 						)}
 					</Card>
-					{shadowMode === "text" && (
-						<Card className="shrink-0 bg-card-bg p-4 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
-							<Label className="mb-2 block">Text Shadow Value</Label>
-							<Input
-								value={textShadowValue}
-								onChange={(e) => setTextShadowValue(e.target.value)}
-								placeholder="0px 2px 10px rgba(0,0,0,0.25)"
-							/>
-						</Card>
-					)}
+
 					<Card className="shrink-0 bg-card-bg p-6 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
 						<h3 className="mb-2 font-medium text-lg">Tailwind CSS v4 Class</h3>
 						<div className="mb-4 flex items-center gap-2">
@@ -336,7 +358,7 @@ export default function ShadowPreview({
 									<CopyToClipboard text={cssOutputValue} />
 									<code className="relative block overflow-x-auto rounded-md border bg-main p-3 text-gray-700 text-sm dark:text-gray-300">
 										{shadowMode === "text"
-											? `<h2 style={{ textShadow: \"${textShadowValue}\" }}>Text Shadow</h2>`
+											? `<div style={{ backgroundColor: "${previewSurfaceColor}" }}><h2 style={{ textShadow: "${textShadowValue}" }}>Text Shadow</h2></div>`
 											: `<div style={{ boxShadow: \"${cssValue}\" }}>Your content here</div>`}
 									</code>
 								</div>

@@ -1,9 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+
 import {
 	Select,
 	SelectContent,
@@ -113,9 +111,7 @@ export default function ShadowGenerator() {
 	>("settings");
 	const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
 	const [previewBackground, setPreviewBackground] = useState("#ECF0F3");
-	const [textShadowValue, setTextShadowValue] = useState(
-		"0px 2px 8px rgba(0, 0, 0, 0.35)",
-	);
+	const [previewSurfaceColor, setPreviewSurfaceColor] = useState("#FFFFFF");
 	const pathname = usePathname();
 	const router = useRouter();
 
@@ -256,6 +252,14 @@ export default function ShadowGenerator() {
 		setIsEdited(false);
 	};
 
+	const textShadowValue = layers
+		.filter((layer) => layer.isVisible !== false)
+		.map((layer) => {
+			const rgba = `rgba(${Number.parseInt(layer.color.slice(1, 3), 16)}, ${Number.parseInt(layer.color.slice(3, 5), 16)}, ${Number.parseInt(layer.color.slice(5, 7), 16)}, ${layer.opacity / 100})`;
+			return `${layer.offsetX}px ${layer.offsetY}px ${layer.blur}px ${rgba}`;
+		})
+		.join(", ");
+
 	return (
 		<>
 			{isMobile && (
@@ -371,33 +375,30 @@ export default function ShadowGenerator() {
 							</Button>
 						</div>
 						{activeSidebarTab === "settings" ? (
-							shadowMode === "box" ? (
-								<ShadowControls
-									layers={layers}
-									setLayers={setLayers}
-									activeLayerIndex={activeLayerIndex}
-									setActiveLayerIndex={setActiveLayerIndex}
-									globalMasterMode={globalMasterMode}
-									// @ts-ignore
-									setGlobalMasterMode={toggleGlobalMasterMode}
-									globalPositionMode={globalPositionMode}
-									globalBlurMode={globalBlurMode}
-									globalSpreadMode={globalSpreadMode}
-									globalOpacityMode={globalOpacityMode}
-									globalShadowTypeMode={globalShadowTypeMode}
-								/>
-							) : (
-								<Card className="h-full rounded-xl border bg-card-bg p-4">
-									<Label className="mb-2 block">Text Shadow Value</Label>
-									<Input
-										value={textShadowValue}
-										onChange={(e) => setTextShadowValue(e.target.value)}
-									/>
-									<p className="mt-3 text-muted-foreground text-sm">
-										Use presets or paste your own `text-shadow` value.
+							<div className="flex h-full min-h-0 flex-col gap-2">
+								{shadowMode === "text" && (
+									<p className="rounded-md border bg-card-bg p-2 text-muted-foreground text-xs">
+										Using the same layer controls as box shadow. For
+										text-shadow, spread/inset are ignored in output.
 									</p>
-								</Card>
-							)
+								)}
+								<div className="min-h-0 flex-1">
+									<ShadowControls
+										layers={layers}
+										setLayers={setLayers}
+										activeLayerIndex={activeLayerIndex}
+										setActiveLayerIndex={setActiveLayerIndex}
+										globalMasterMode={globalMasterMode}
+										// @ts-ignore
+										setGlobalMasterMode={toggleGlobalMasterMode}
+										globalPositionMode={globalPositionMode}
+										globalBlurMode={globalBlurMode}
+										globalSpreadMode={globalSpreadMode}
+										globalOpacityMode={globalOpacityMode}
+										globalShadowTypeMode={globalShadowTypeMode}
+									/>
+								</div>
+							</div>
 						) : (
 							<ShadowPresets
 								mode={activeSidebarTab}
@@ -412,8 +413,8 @@ export default function ShadowGenerator() {
 								currentPresetId={currentPresetId}
 								setCurrentPresetId={setCurrentPresetId}
 								isDarkMode={isDarkMode}
-								textShadowValue={textShadowValue}
-								setTextShadowValue={setTextShadowValue}
+								setLayers={setLayers}
+								setActiveLayerIndex={setActiveLayerIndex}
 							/>
 						)}
 					</div>
@@ -425,7 +426,6 @@ export default function ShadowGenerator() {
 						cssValue={cssValue}
 						tailwindClass={tailwindClass}
 						textShadowValue={textShadowValue}
-						setTextShadowValue={setTextShadowValue}
 						isRemoveShadow={isRemoveShadow}
 						setIsRemoveShadow={setIsRemoveShadow}
 						isEdited={isEdited}
@@ -435,6 +435,8 @@ export default function ShadowGenerator() {
 						activeShadow={activeShadow}
 						previewBackground={previewBackground}
 						setPreviewBackground={setPreviewBackground}
+						previewSurfaceColor={previewSurfaceColor}
+						setPreviewSurfaceColor={setPreviewSurfaceColor}
 					/>
 				</div>
 			</div>

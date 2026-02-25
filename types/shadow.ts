@@ -29,6 +29,7 @@ export interface TextShadowPreset {
 	name: string;
 	textShadow: string;
 	tailwindV4: string;
+	layers: ShadowLayer[];
 }
 
 export interface ShadowStore {
