@@ -1535,3 +1535,36 @@ export const preBuiltShadows = [
 		],
 	},
 ];
+
+export const preBuiltTextShadows = [
+	{
+		id: "text-1",
+		name: "Soft Lift",
+		textShadow: "0px 2px 8px rgba(15, 23, 42, 0.25)",
+		tailwindV4: "[text-shadow:0px_2px_8px_rgba(15,23,42,0.25)]",
+	},
+	{
+		id: "text-2",
+		name: "Retro Neon",
+		textShadow:
+			"0px 0px 6px rgba(34,211,238,0.9), 0px 0px 18px rgba(14,165,233,0.65)",
+		tailwindV4:
+			"[text-shadow:0px_0px_6px_rgba(34,211,238,0.9),0px_0px_18px_rgba(14,165,233,0.65)]",
+	},
+	{
+		id: "text-3",
+		name: "Hard Outline",
+		textShadow:
+			"1px 1px 0px rgba(0,0,0,0.8), -1px -1px 0px rgba(0,0,0,0.8), 1px -1px 0px rgba(0,0,0,0.8), -1px 1px 0px rgba(0,0,0,0.8)",
+		tailwindV4:
+			"[text-shadow:1px_1px_0px_rgba(0,0,0,0.8),-1px_-1px_0px_rgba(0,0,0,0.8),1px_-1px_0px_rgba(0,0,0,0.8),-1px_1px_0px_rgba(0,0,0,0.8)]",
+	},
+	{
+		id: "text-4",
+		name: "Long Shadow",
+		textShadow:
+			"1px 1px 0 rgba(0,0,0,0.15), 2px 2px 0 rgba(0,0,0,0.14), 3px 3px 0 rgba(0,0,0,0.13), 4px 4px 0 rgba(0,0,0,0.12), 5px 5px 0 rgba(0,0,0,0.11)",
+		tailwindV4:
+			"[text-shadow:1px_1px_0_rgba(0,0,0,0.15),2px_2px_0_rgba(0,0,0,0.14),3px_3px_0_rgba(0,0,0,0.13),4px_4px_0_rgba(0,0,0,0.12),5px_5px_0_rgba(0,0,0,0.11)]",
+	},
+] as const;

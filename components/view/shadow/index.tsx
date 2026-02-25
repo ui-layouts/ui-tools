@@ -1,6 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
 	Select,
 	SelectContent,
@@ -35,6 +38,7 @@ export default function ShadowGenerator() {
 	const [shadowName, setShadowName] = useState("");
 	const [isEdited, setIsEdited] = useState(false);
 	const [currentPresetId, setCurrentPresetId] = useState<string | null>(null);
+	const [shadowMode, setShadowMode] = useState<"box" | "text">("box");
 
 	const {
 		savedShadows,
@@ -107,6 +111,9 @@ export default function ShadowGenerator() {
 	>("settings");
 	const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
 	const [previewBackground, setPreviewBackground] = useState("#ECF0F3");
+	const [textShadowValue, setTextShadowValue] = useState(
+		"0px 2px 8px rgba(0, 0, 0, 0.35)",
+	);
 	const pathname = usePathname();
 	const router = useRouter();
 
@@ -170,14 +177,12 @@ export default function ShadowGenerator() {
 			colorMap.set(color, (colorMap.get(color) || 0) + 1);
 		}
 
-		const uniqueColorArray = Array.from(colorMap.entries()).map(
-			([color, count]) => ({
+		setUniqueColors(
+			Array.from(colorMap.entries()).map(([color, count]) => ({
 				color,
 				count,
-			}),
+			})),
 		);
-
-		setUniqueColors(uniqueColorArray);
 	}, [layers, activeShadow]);
 
 	useEffect(() => {
@@ -189,13 +194,11 @@ export default function ShadowGenerator() {
 		originalPreset: ShadowPreset,
 	) => {
 		if (!originalPreset) return false;
-
 		if (currentLayers.length !== originalPreset.layers.length) return true;
 
 		for (let i = 0; i < currentLayers.length; i++) {
 			const currentLayer = currentLayers[i];
 			const originalLayer = originalPreset.layers[i];
-
 			if (
 				currentLayer.offsetX !== originalLayer.offsetX ||
 				currentLayer.offsetY !== originalLayer.offsetY ||
@@ -219,6 +222,7 @@ export default function ShadowGenerator() {
 		} else {
 			setLayers([...preset.layers]);
 		}
+		setShadowMode("box");
 		setActiveLayerIndex(0);
 		setActiveShadow(preset);
 		setCurrentPresetId(preset.id || null);
@@ -240,7 +244,6 @@ export default function ShadowGenerator() {
 
 		if (currentPresetId && savedShadows.some((s) => s.id === currentPresetId)) {
 			updateShadow(currentPresetId, shadowToSave);
-
 			toast.success("Your custom shadow has been updated.!");
 		} else {
 			const newId = addShadow(shadowToSave);
@@ -329,43 +332,83 @@ export default function ShadowGenerator() {
 					</div>
 				</div>
 
-				{!isTab &&
-					isSidebarExpanded &&
-					(activeSidebarTab === "settings" ? (
-						<ShadowControls
-							layers={layers}
-							setLayers={setLayers}
-							activeLayerIndex={activeLayerIndex}
-							setActiveLayerIndex={setActiveLayerIndex}
-							globalMasterMode={globalMasterMode}
-							// @ts-ignore
-							setGlobalMasterMode={toggleGlobalMasterMode}
-							globalPositionMode={globalPositionMode}
-							globalBlurMode={globalBlurMode}
-							globalSpreadMode={globalSpreadMode}
-							globalOpacityMode={globalOpacityMode}
-							globalShadowTypeMode={globalShadowTypeMode}
-						/>
-					) : (
-						<ShadowPresets
-							mode={activeSidebarTab}
-							activeShadow={activeShadow}
-							applyPreset={applyPreset}
-							savedShadows={savedShadows}
-							favorites={favorites}
-							toggleFavorite={toggleFavorite}
-							isFavorite={isFavorite}
-							deleteShadow={deleteShadow}
-							currentPresetId={currentPresetId}
-							setCurrentPresetId={setCurrentPresetId}
-							isDarkMode={isDarkMode}
-						/>
-					))}
+				{!isTab && isSidebarExpanded && (
+					<div className="h-full min-h-0">
+						<div className="mb-3 grid grid-cols-2 gap-2">
+							<Button
+								type="button"
+								variant={shadowMode === "box" ? "default" : "outline"}
+								onClick={() => setShadowMode("box")}
+							>
+								Box Shadow
+							</Button>
+							<Button
+								type="button"
+								variant={shadowMode === "text" ? "default" : "outline"}
+								onClick={() => {
+									setShadowMode("text");
+									setActiveSidebarTab("presets");
+								}}
+							>
+								Text Shadow
+							</Button>
+						</div>
+						{activeSidebarTab === "settings" ? (
+							shadowMode === "box" ? (
+								<ShadowControls
+									layers={layers}
+									setLayers={setLayers}
+									activeLayerIndex={activeLayerIndex}
+									setActiveLayerIndex={setActiveLayerIndex}
+									globalMasterMode={globalMasterMode}
+									// @ts-ignore
+									setGlobalMasterMode={toggleGlobalMasterMode}
+									globalPositionMode={globalPositionMode}
+									globalBlurMode={globalBlurMode}
+									globalSpreadMode={globalSpreadMode}
+									globalOpacityMode={globalOpacityMode}
+									globalShadowTypeMode={globalShadowTypeMode}
+								/>
+							) : (
+								<Card className="h-full rounded-xl border bg-card-bg p-4">
+									<Label className="mb-2 block">Text Shadow Value</Label>
+									<Input
+										value={textShadowValue}
+										onChange={(e) => setTextShadowValue(e.target.value)}
+									/>
+									<p className="mt-3 text-muted-foreground text-sm">
+										Use presets or paste your own `text-shadow` value.
+									</p>
+								</Card>
+							)
+						) : (
+							<ShadowPresets
+								mode={activeSidebarTab}
+								shadowMode={shadowMode}
+								activeShadow={activeShadow}
+								applyPreset={applyPreset}
+								savedShadows={savedShadows}
+								favorites={favorites}
+								toggleFavorite={toggleFavorite}
+								isFavorite={isFavorite}
+								deleteShadow={deleteShadow}
+								currentPresetId={currentPresetId}
+								setCurrentPresetId={setCurrentPresetId}
+								isDarkMode={isDarkMode}
+								textShadowValue={textShadowValue}
+								setTextShadowValue={setTextShadowValue}
+							/>
+						)}
+					</div>
+				)}
 
 				<div className="col-span-12 h-full min-h-0 lg:col-auto">
 					<ShadowPreview
+						shadowMode={shadowMode}
 						cssValue={cssValue}
 						tailwindClass={tailwindClass}
+						textShadowValue={textShadowValue}
+						setTextShadowValue={setTextShadowValue}
 						isRemoveShadow={isRemoveShadow}
 						setIsRemoveShadow={setIsRemoveShadow}
 						isEdited={isEdited}

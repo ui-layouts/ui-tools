@@ -3,7 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { preBuiltShadows } from "@/config/shadow-data";
+import { preBuiltShadows, preBuiltTextShadows } from "@/config/shadow-data";
 import { cn } from "@/lib/utils";
 import type { ShadowPreset } from "@/types/shadow";
 import { Star, Trash } from "lucide-react";
@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 
 interface ShadowPresetsProps {
 	mode: "presets" | "edited" | "saved";
+	shadowMode: "box" | "text";
 	activeShadow: ShadowPreset | null;
 	applyPreset: (preset: ShadowPreset) => void;
 	savedShadows: ShadowPreset[];
@@ -23,10 +24,13 @@ interface ShadowPresetsProps {
 	currentPresetId: string | null;
 	setCurrentPresetId: React.Dispatch<React.SetStateAction<string | null>>;
 	isDarkMode: boolean;
+	textShadowValue: string;
+	setTextShadowValue: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function ShadowPresets({
 	mode,
+	shadowMode,
 	activeShadow,
 	applyPreset,
 	savedShadows,
@@ -37,21 +41,60 @@ export default function ShadowPresets({
 	currentPresetId,
 	setCurrentPresetId,
 	isDarkMode,
+	textShadowValue,
+	setTextShadowValue,
 }: ShadowPresetsProps) {
 	const favouriteShadows = preBuiltShadows.filter((s) =>
 		favorites.includes(s.id),
 	);
 
+	if (shadowMode === "text") {
+		return (
+			<ScrollArea className="h-full rounded-xl border bg-card-bg p-4 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
+				{mode === "presets" ? (
+					<div className="grid grid-cols-1 gap-3">
+						{preBuiltTextShadows.map((preset) => (
+							<button
+								type="button"
+								key={preset.id}
+								onClick={() => setTextShadowValue(preset.textShadow)}
+								className={cn(
+									"rounded-lg border bg-main p-4 text-left transition hover:border-primary",
+									textShadowValue === preset.textShadow &&
+										"border-primary ring-1 ring-primary",
+								)}
+							>
+								<p className="font-medium text-sm">{preset.name}</p>
+								<p
+									className="mt-2 font-semibold text-2xl"
+									style={{ textShadow: preset.textShadow }}
+								>
+									Shadow
+								</p>
+								<code className="mt-2 block truncate text-[11px] text-muted-foreground">
+									{preset.tailwindV4}
+								</code>
+							</button>
+						))}
+					</div>
+				) : (
+					<p className="text-muted-foreground text-sm">
+						Text shadow presets are currently available under the Presets tab.
+					</p>
+				)}
+			</ScrollArea>
+		);
+	}
+
 	return (
 		<ScrollArea className="h-full rounded-xl border bg-card-bg dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
 			{mode === "saved" && savedShadows.length > 0 && (
-				<div className="grid grid-cols-2 gap-3 border-b p-4">
+				<div className="grid grid-cols-1 gap-3 border-b p-4 xl:grid-cols-2">
 					{savedShadows.map((shadow) => (
 						<motion.div
 							key={shadow.id}
 							className={cn("group relative cursor-pointer rounded-md p-4")}
 							onClick={() => {
-								// Create a preset-like object from saved shadow
 								const savedPreset = {
 									id: shadow.id,
 									name: shadow.name,
@@ -80,9 +123,7 @@ export default function ShadowPresets({
 								)}
 							</AnimatePresence>
 							<div
-								className={cn(
-									"relative flex h-28 w-full flex-col items-center justify-center rounded-lg text-center text-neutral-700 text-sm transition-transform group-hover:scale-105 dark:bg-neutral-950 dark:text-neutral-400",
-								)}
+								className="relative flex h-36 w-full flex-col items-center justify-center rounded-lg text-center text-neutral-700 text-sm transition-transform group-hover:scale-105 dark:bg-neutral-950 dark:text-neutral-400"
 								style={{
 									boxShadow:
 										isDarkMode && shadow.darkCss ? shadow.darkCss : shadow.css,
@@ -115,7 +156,7 @@ export default function ShadowPresets({
 			)}
 
 			{mode === "edited" && favouriteShadows.length > 0 && (
-				<div className="grid grid-cols-2 gap-3 border-b p-4">
+				<div className="grid grid-cols-1 gap-3 border-b p-4 xl:grid-cols-2">
 					{favouriteShadows.map((shadow) => (
 						<motion.div
 							key={shadow.id}
@@ -138,11 +179,9 @@ export default function ShadowPresets({
 							</AnimatePresence>
 							<div
 								className={cn(
-									"relative flex h-28 w-full flex-col items-center justify-center rounded-lg text-center text-neutral-700 text-sm transition-transform group-hover:scale-105 dark:bg-neutral-950 dark:text-neutral-400",
+									"relative flex h-36 w-full flex-col items-center justify-center rounded-lg text-center text-neutral-700 text-sm transition-transform group-hover:scale-105 dark:bg-neutral-950 dark:text-neutral-400",
 									isDarkMode
-										? shadow.darkTailwind
-											? shadow.darkTailwind
-											: shadow.tailwind
+										? shadow.darkTailwind || shadow.tailwind
 										: shadow.tailwind,
 								)}
 							>
@@ -169,7 +208,7 @@ export default function ShadowPresets({
 			)}
 
 			{mode === "presets" && (
-				<div className="grid grid-cols-2 gap-3 p-4">
+				<div className="grid grid-cols-1 gap-3 p-4 xl:grid-cols-2">
 					{preBuiltShadows.map((shadow, index) => (
 						<motion.div
 							key={shadow.id || `preset_${index}`}
@@ -192,11 +231,9 @@ export default function ShadowPresets({
 							</AnimatePresence>
 							<div
 								className={cn(
-									"relative flex h-28 w-full flex-col items-center justify-center rounded-lg text-center text-neutral-700 text-sm transition-transform group-hover:scale-105 dark:bg-neutral-950 dark:text-neutral-400",
+									"relative flex h-36 w-full flex-col items-center justify-center rounded-lg text-center text-neutral-700 text-sm transition-transform group-hover:scale-105 dark:bg-neutral-950 dark:text-neutral-400",
 									isDarkMode
-										? shadow.darkTailwind
-											? shadow.darkTailwind
-											: shadow.tailwind
+										? shadow.darkTailwind || shadow.tailwind
 										: shadow.tailwind,
 								)}
 							>
