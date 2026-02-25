@@ -18,10 +18,12 @@ import type { ShadowLayer, ShadowPreset } from "@/types/shadow";
 import {
 	Bookmark,
 	Layers,
+	Moon,
 	PanelsTopLeft,
 	Settings2,
 	SidebarClose,
 	SidebarOpen,
+	Sun,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { usePathname, useRouter } from "next/navigation";
@@ -32,7 +34,7 @@ import ShadowPresets from "./shadow-presets";
 import ShadowPreview from "./shadow-preview";
 
 export default function ShadowGenerator() {
-	const { theme } = useTheme();
+	const { resolvedTheme, setTheme, theme } = useTheme();
 	const isTab = useMediaQuery("(max-width:1024px)");
 	const isMobile = useMediaQuery("(max-width:768px)");
 	const [shadowName, setShadowName] = useState("");
@@ -265,8 +267,8 @@ export default function ShadowGenerator() {
 				id="editor"
 				className={`relative z-10 grid h-full min-h-0 grid-cols-12 gap-3 p-3 ${
 					isSidebarExpanded
-						? "lg:grid-cols-[88px_380px_minmax(0,1fr)]"
-						: "lg:grid-cols-[88px_minmax(0,1fr)]"
+						? "lg:grid-cols-[74px_340px_minmax(0,1fr)]"
+						: "lg:grid-cols-[74px_minmax(0,1fr)]"
 				}`}
 			>
 				<div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
@@ -298,6 +300,21 @@ export default function ShadowGenerator() {
 						))}
 					</div>
 					<div className="space-y-2">
+						<Button
+							type="button"
+							variant="outline"
+							size="icon"
+							className="h-9 w-full"
+							onClick={() =>
+								setTheme(resolvedTheme === "dark" ? "light" : "dark")
+							}
+						>
+							{resolvedTheme === "dark" ? (
+								<Sun className="h-4 w-4" />
+							) : (
+								<Moon className="h-4 w-4" />
+							)}
+						</Button>
 						<Button
 							type="button"
 							variant="outline"
