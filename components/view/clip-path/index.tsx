@@ -6,14 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import CopyToClipboard from "@/components/ui/copy-to-clipboard";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { cn } from "@/lib/utils";
 import { parseSvgPath, pointsToSvgPath } from "@/lib/utils";
 import { useClipPathStore } from "@/store/clipPath-storage";
 import { TabsTrigger } from "@radix-ui/react-tabs";
-import { ChevronsDown } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CodeOutput } from "./code-output";
 import { CustomShapeForm } from "./custom-shape-form";
@@ -31,7 +29,6 @@ const SAMPLE_IMAGES = [
 ];
 
 export default function ClipPathGenerator() {
-	const isTab = useMediaQuery("(max-width:1024px)");
 	const isMobile = useMediaQuery("(max-width:768px)");
 
 	const {
@@ -48,7 +45,6 @@ export default function ClipPathGenerator() {
 		editedShapes,
 	} = useClipPathStore();
 
-	const [viewAll, setViewAll] = useState(false);
 	const [selectedImage, setSelectedImage] = useState(SAMPLE_IMAGES[0]);
 	const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 	const [editClipPathId, _setEditClipPathId] = useState("edit-clip-path");
@@ -232,84 +228,18 @@ export default function ClipPathGenerator() {
 
 	return (
 		<>
-			<article className="space-y-3 pb-8">
-				<h1 className="text-center font-medium text-2xl sm:text-3xl md:text-5xl ">
-					SVG Clip-Paths for <br /> Developers & Designers
-				</h1>
-
-				<div className="mx-auto flex w-fit items-center justify-center gap-2 font-semibold">
-					<div className="flex gap-2 rounded-md border bg-card-bg p-2 shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
-						Expand
-						<Switch
-							id="view-all-switch"
-							checked={viewAll}
-							onCheckedChange={setViewAll}
-							className="bg-main"
-						/>
-					</div>
-					<a
-						href="#editor"
-						className="group flex cursor-pointer gap-1 rounded-md border bg-card-bg p-2 text-primary shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] hover:bg-accent dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0"
-					>
-						Click to Editor
-						<ChevronsDown />
-					</a>
-				</div>
-			</article>
-
-			<div
-				className={cn(
-					"relative mx-auto grid max-w-screen-lg grid-cols-4 gap-6 px-4 pb-10 lg:grid-cols-5 lg:px-0 2xl:max-w-screen-xl 2xl:gap-10",
-					viewAll ? "h-full" : "h-[28rem]",
-				)}
-			>
-				{!viewAll && (
-					<div className="absolute bottom-0 left-0 z-10 grid h-60 w-full place-content-center bg-gradient-to-t from-42% from-white dark:from-black" />
-				)}
-
-				{(viewAll ? INITIAL_CLIP_PATHS : INITIAL_CLIP_PATHS.slice(0, 10)).map(
-					(shape) => (
-						<div
-							key={shape.id}
-							className="group relative grid aspect-square w-full cursor-pointer place-items-center rounded-lg border p-3 lg:p-10 2xl:h-48 dark:border-neutral-950"
-							onClick={() => setSelectedShapeId(shape.id)}
-							onKeyDown={(e) => {
-								if (e.key === "Enter" || e.key === " ") {
-									setSelectedShapeId(shape.id);
-								}
-							}}
-						>
-							<svg
-								viewBox="0 0 100 100"
-								className="relative z-[2] text-neutral-300 dark:text-neutral-500"
-								aria-hidden="true"
-								focusable="false"
-							>
-								<path
-									d={shape.path}
-									fill="currentColor"
-									transform={"scale(100)"}
-								/>
-							</svg>
-						</div>
-					),
-				)}
-			</div>
 			{isMobile && (
 				<p className="pb-2 text-center text-primary/60">
 					Please use a desktop/laptop to view the Editor.
 				</p>
 			)}
 
-			<div
-				id="editor"
-				className="mx-auto grid grid-cols-12 gap-2 px-4 pb-5 xl:container lg:grid-cols-12 xl:px-0"
-			>
+			<div id="editor" className="grid h-full min-h-0 grid-cols-12 gap-3 p-3">
 				{/* Left column: Controls */}
 				{!isMobile && (
-					<Card className="col-span-4 h-[95vh] bg-card-bg xl:col-span-3 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
-						<CardContent className="h-full p-2">
-							<Tabs defaultValue="shapes" className="h-full">
+					<Card className="col-span-4 h-full min-h-0 bg-card-bg xl:col-span-3 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
+						<CardContent className="h-full min-h-0 p-2">
+							<Tabs defaultValue="shapes" className="h-full min-h-0">
 								<TabsList className="flex h-12 w-full gap-1 rounded-md border bg-card p-1.5 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
 									<TabsTrigger
 										value="shapes"
@@ -331,7 +261,7 @@ export default function ClipPathGenerator() {
 									</TabsTrigger>
 								</TabsList>
 
-								<TabsContent value="shapes" className="h-[80%] p-0">
+								<TabsContent value="shapes" className="h-full min-h-0 p-0">
 									<ScrollArea
 										className={cn(
 											"mb-4 h-full rounded-lg border ",
@@ -369,7 +299,7 @@ export default function ClipPathGenerator() {
 
 								<TabsContent
 									value="editedShapes"
-									className="h-[80%] rounded-md border bg-background p-3 2xl:h-[90%]"
+									className="h-full min-h-0 rounded-md border bg-background p-3"
 								>
 									{editedShapes.length > 0 ? (
 										<>
@@ -405,7 +335,7 @@ export default function ClipPathGenerator() {
 
 								<TabsContent
 									value="custom"
-									className="h-[80%] rounded-md border bg-background p-2 2xl:h-[90%]"
+									className="h-full min-h-0 rounded-md border bg-background p-2"
 								>
 									<ScrollArea className={cn("bg h-full rounded-md")}>
 										<div
@@ -459,20 +389,19 @@ export default function ClipPathGenerator() {
 					</Card>
 				)}
 
-				{/* Middle column: Preview */}
-				<ScrollArea className="col-span-12 rounded-xl border bg-card-bg md:col-span-8 md:h-[95vh] lg:col-span-5 xl:col-span-6 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
-					<Card className="relative border-0 bg-card-bg shadow-none dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
-						<CardContent className="space-y-4 p-6">
-							<div className="space-y-2">
-								<ImageSelector
-									selectedImage={selectedImage}
-									setSelectedImage={setSelectedImage}
-									sampleImages={SAMPLE_IMAGES}
-									uploadedImages={uploadedImages}
-									onImageUpload={handleImageUpload}
-									disabled={editMode}
-								/>
+				<div className="col-span-12 h-full min-h-0 md:col-span-8 lg:col-span-8 xl:col-span-9">
+					<Card className="relative h-full border bg-card-bg dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
+						<CardContent className="flex h-full min-h-0 flex-col gap-3 p-4">
+							<ImageSelector
+								selectedImage={selectedImage}
+								setSelectedImage={setSelectedImage}
+								sampleImages={SAMPLE_IMAGES}
+								uploadedImages={uploadedImages}
+								onImageUpload={handleImageUpload}
+								disabled={editMode}
+							/>
 
+							<div className="min-h-0 flex-1 space-y-2">
 								<ShapePreview
 									selectedShape={selectedShape}
 									selectedImage={selectedImage}
@@ -501,33 +430,18 @@ export default function ClipPathGenerator() {
 									Use mouse wheel + Ctrl to zoom in/out, or press + and - keys
 								</p>
 							</div>
-							{isTab && (
+
+							<div className="shrink-0 rounded-md border bg-card p-2">
 								<CodeOutput
-									showOnlyCopyButton
 									selectedShape={selectedShape}
 									currentEditPath={currentEditPath || selectedShape.path}
 									editMode={editMode}
-									className="absolute top-0 left-0 h-full w-full bg-card-bg"
+									showOnlyCopyButton={isMobile}
 								/>
-							)}
+							</div>
 						</CardContent>
 					</Card>
-				</ScrollArea>
-
-				{/* Right column: Code output */}
-				{!isTab && (
-					<ScrollArea className="col-span-3 h-[95vh] rounded-xl border bg-card-bg xl:col-span-3 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
-						<Card className="border-0 bg-card-bg shadow-none">
-							<CardContent className="space-y-4 p-2">
-								<CodeOutput
-									selectedShape={selectedShape}
-									currentEditPath={currentEditPath || selectedShape.path}
-									editMode={editMode}
-								/>
-							</CardContent>
-						</Card>
-					</ScrollArea>
-				)}
+				</div>
 			</div>
 		</>
 	);

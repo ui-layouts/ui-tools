@@ -7,7 +7,9 @@ import type React from "react";
 function Toolslayout({ children }: { children: React.ReactNode }) {
 	const pathname = usePathname();
 	const isFullPlayground =
-		pathname === "/svg-line-draw" || pathname === "/shadows";
+		pathname === "/svg-line-draw" ||
+		pathname === "/shadows" ||
+		pathname === "/clip-paths";
 
 	return (
 		<div className="h-screen overflow-hidden bg-white text-black dark:bg-black dark:text-white">
