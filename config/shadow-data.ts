@@ -1535,3 +1535,231 @@ export const preBuiltShadows = [
 		],
 	},
 ];
+
+export const preBuiltTextShadows = [
+	{
+		id: "text-1",
+		name: "Soft Lift",
+		textShadow: "0px 2px 8px rgba(15, 23, 42, 0.25)",
+		tailwindV4: "[text-shadow:0px_2px_8px_rgba(15,23,42,0.25)]",
+		layers: [
+			{
+				offsetX: 0,
+				offsetY: 2,
+				blur: 8,
+				spread: 0,
+				color: "#0F172A",
+				opacity: 25,
+			},
+		],
+	},
+	{
+		id: "text-2",
+		name: "Retro Neon",
+		textShadow:
+			"0px 0px 6px rgba(34,211,238,0.9), 0px 0px 18px rgba(14,165,233,0.65)",
+		tailwindV4:
+			"[text-shadow:0px_0px_6px_rgba(34,211,238,0.9),0px_0px_18px_rgba(14,165,233,0.65)]",
+		layers: [
+			{
+				offsetX: 0,
+				offsetY: 0,
+				blur: 6,
+				spread: 0,
+				color: "#22D3EE",
+				opacity: 90,
+			},
+			{
+				offsetX: 0,
+				offsetY: 0,
+				blur: 18,
+				spread: 0,
+				color: "#0EA5E9",
+				opacity: 65,
+			},
+		],
+	},
+	{
+		id: "text-3",
+		name: "Hard Outline",
+		textShadow:
+			"1px 1px 0px rgba(0,0,0,0.8), -1px -1px 0px rgba(0,0,0,0.8), 1px -1px 0px rgba(0,0,0,0.8), -1px 1px 0px rgba(0,0,0,0.8)",
+		tailwindV4:
+			"[text-shadow:1px_1px_0px_rgba(0,0,0,0.8),-1px_-1px_0px_rgba(0,0,0,0.8),1px_-1px_0px_rgba(0,0,0,0.8),-1px_1px_0px_rgba(0,0,0,0.8)]",
+		layers: [
+			{
+				offsetX: 1,
+				offsetY: 1,
+				blur: 0,
+				spread: 0,
+				color: "#000000",
+				opacity: 80,
+			},
+			{
+				offsetX: -1,
+				offsetY: -1,
+				blur: 0,
+				spread: 0,
+				color: "#000000",
+				opacity: 80,
+			},
+			{
+				offsetX: 1,
+				offsetY: -1,
+				blur: 0,
+				spread: 0,
+				color: "#000000",
+				opacity: 80,
+			},
+			{
+				offsetX: -1,
+				offsetY: 1,
+				blur: 0,
+				spread: 0,
+				color: "#000000",
+				opacity: 80,
+			},
+		],
+	},
+	{
+		id: "text-4",
+		name: "Long Shadow",
+		textShadow:
+			"1px 1px 0 rgba(0,0,0,0.15), 2px 2px 0 rgba(0,0,0,0.14), 3px 3px 0 rgba(0,0,0,0.13), 4px 4px 0 rgba(0,0,0,0.12), 5px 5px 0 rgba(0,0,0,0.11)",
+		tailwindV4:
+			"[text-shadow:1px_1px_0_rgba(0,0,0,0.15),2px_2px_0_rgba(0,0,0,0.14),3px_3px_0_rgba(0,0,0,0.13),4px_4px_0_rgba(0,0,0,0.12),5px_5px_0_rgba(0,0,0,0.11)]",
+		layers: [
+			{
+				offsetX: 1,
+				offsetY: 1,
+				blur: 0,
+				spread: 0,
+				color: "#000000",
+				opacity: 15,
+			},
+			{
+				offsetX: 2,
+				offsetY: 2,
+				blur: 0,
+				spread: 0,
+				color: "#000000",
+				opacity: 14,
+			},
+			{
+				offsetX: 3,
+				offsetY: 3,
+				blur: 0,
+				spread: 0,
+				color: "#000000",
+				opacity: 13,
+			},
+			{
+				offsetX: 4,
+				offsetY: 4,
+				blur: 0,
+				spread: 0,
+				color: "#000000",
+				opacity: 12,
+			},
+			{
+				offsetX: 5,
+				offsetY: 5,
+				blur: 0,
+				spread: 0,
+				color: "#000000",
+				opacity: 11,
+			},
+		],
+	},
+	{
+		id: "text-5",
+		name: "Embossed",
+		textShadow: "1px 1px 0 rgba(255,255,255,0.6), -1px -1px 0 rgba(0,0,0,0.2)",
+		tailwindV4:
+			"[text-shadow:1px_1px_0_rgba(255,255,255,0.6),-1px_-1px_0_rgba(0,0,0,0.2)]",
+		layers: [
+			{
+				offsetX: 1,
+				offsetY: 1,
+				blur: 0,
+				spread: 0,
+				color: "#FFFFFF",
+				opacity: 60,
+			},
+			{
+				offsetX: -1,
+				offsetY: -1,
+				blur: 0,
+				spread: 0,
+				color: "#000000",
+				opacity: 20,
+			},
+		],
+	},
+	{
+		id: "text-6",
+		name: "Glow Punch",
+		textShadow:
+			"0 0 4px rgba(255,255,255,0.85), 0 0 14px rgba(236,72,153,0.55), 0 0 28px rgba(236,72,153,0.35)",
+		tailwindV4:
+			"[text-shadow:0_0_4px_rgba(255,255,255,0.85),0_0_14px_rgba(236,72,153,0.55),0_0_28px_rgba(236,72,153,0.35)]",
+		layers: [
+			{
+				offsetX: 0,
+				offsetY: 0,
+				blur: 4,
+				spread: 0,
+				color: "#FFFFFF",
+				opacity: 85,
+			},
+			{
+				offsetX: 0,
+				offsetY: 0,
+				blur: 14,
+				spread: 0,
+				color: "#EC4899",
+				opacity: 55,
+			},
+			{
+				offsetX: 0,
+				offsetY: 0,
+				blur: 28,
+				spread: 0,
+				color: "#EC4899",
+				opacity: 35,
+			},
+		],
+	},
+	{
+		id: "text-7",
+		name: "Crisp Offset",
+		textShadow: "2px 2px 0 rgba(17,24,39,0.35)",
+		tailwindV4: "[text-shadow:2px_2px_0_rgba(17,24,39,0.35)]",
+		layers: [
+			{
+				offsetX: 2,
+				offsetY: 2,
+				blur: 0,
+				spread: 0,
+				color: "#111827",
+				opacity: 35,
+			},
+		],
+	},
+	{
+		id: "text-8",
+		name: "Soft Cloud",
+		textShadow: "0 8px 20px rgba(15,23,42,0.22)",
+		tailwindV4: "[text-shadow:0_8px_20px_rgba(15,23,42,0.22)]",
+		layers: [
+			{
+				offsetX: 0,
+				offsetY: 8,
+				blur: 20,
+				spread: 0,
+				color: "#0F172A",
+				opacity: 22,
+			},
+		],
+	},
+] as const;

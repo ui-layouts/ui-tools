@@ -24,6 +24,14 @@ export interface ShadowPreset {
 	shadowName?: string;
 }
 
+export interface TextShadowPreset {
+	id: string;
+	name: string;
+	textShadow: string;
+	tailwindV4: string;
+	layers: ShadowLayer[];
+}
+
 export interface ShadowStore {
 	savedShadows: ShadowPreset[];
 	favorites: string[];

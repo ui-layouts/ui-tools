@@ -3,6 +3,7 @@ import ColorConverter from "@/components/view/colors";
 import { siteConfig } from "@/lib/utils";
 import type { Metadata } from "next";
 import React, { Suspense } from "react";
+import { ToolPlaygroundShell } from "@/components/common/tool-playground-shell";
 export const metadata: Metadata = {
 	title:
 		"Color Lab – Generate Color Palettes, Convert Codes & Build Shadcn Themes",
@@ -85,11 +86,16 @@ const PageLoading = () => {
 };
 function page() {
 	return (
-		<>
-			<Suspense fallback={<PageLoading />}>
-				<ColorConverter />
-			</Suspense>
-		</>
+		<ToolPlaygroundShell
+			title="Color Lab"
+			description="Convert HEX/RGB/HSL and generate scales, contrast, and tokens."
+			examples={["Brand blue", "Sunset orange", "Mint", "Slate"]}
+			docs="Use Playground for live editing, Examples to load quick presets, and Export to copy production-ready output."
+			exportLabel="CSS Variables"
+			exportCode={`/* export output from active tool */`}
+		>
+			<ColorConverter />
+		</ToolPlaygroundShell>
 	);
 }
 

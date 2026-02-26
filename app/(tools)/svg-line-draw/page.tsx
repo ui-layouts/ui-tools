@@ -2,6 +2,7 @@ import SVGLineDrawGenerator from "@/components/view/svg-line-draw";
 import { siteConfig } from "@/lib/utils";
 import type { Metadata } from "next";
 import React, { Suspense } from "react";
+
 export const metadata: Metadata = {
 	title: "SVG Line Draw – Sketch & Animate Hand-Drawn Lines for the Web",
 	description:
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
 		siteName: siteConfig.name,
 		images: [
 			{
-				url: siteConfig.lineDrawOgImage, // Replace with relevant OG image
+				url: siteConfig.lineDrawOgImage,
 				width: 1200,
 				height: 630,
 				alt: `SVG Line Draw by ${siteConfig.name}`,
@@ -54,6 +55,7 @@ export const metadata: Metadata = {
 		creator: "@naymur_dev",
 	},
 };
+
 const PageLoading = () => {
 	return (
 		<>
@@ -69,13 +71,12 @@ const PageLoading = () => {
 		</>
 	);
 };
+
 function page() {
 	return (
-		<>
-			<Suspense fallback={<PageLoading />}>
-				<SVGLineDrawGenerator />
-			</Suspense>
-		</>
+		<Suspense fallback={<PageLoading />}>
+			<SVGLineDrawGenerator />
+		</Suspense>
 	);
 }
 

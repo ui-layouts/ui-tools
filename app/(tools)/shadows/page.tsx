@@ -2,6 +2,7 @@ import ShadowGenerator from "@/components/view/shadow";
 import { siteConfig } from "@/lib/utils";
 import type { Metadata } from "next";
 import React from "react";
+
 export const metadata: Metadata = {
 	title: "Shadows Generator",
 	description:
@@ -52,11 +53,7 @@ export const metadata: Metadata = {
 };
 
 function page() {
-	return (
-		<>
-			<ShadowGenerator />
-		</>
-	);
+	return <ShadowGenerator />;
 }
 
 export default page;

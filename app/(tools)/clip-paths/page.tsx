@@ -51,11 +51,7 @@ export const metadata: Metadata = {
 };
 
 function page() {
-	return (
-		<>
-			<ClipPathGenerator />
-		</>
-	);
+	return <ClipPathGenerator />;
 }
 
 export default page;

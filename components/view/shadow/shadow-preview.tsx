@@ -25,12 +25,14 @@ import {
 import { cn } from "@/lib/utils";
 import type { ShadowPreset } from "@/types/shadow";
 import { Check, Copy, Save } from "lucide-react";
-import { useState } from "react";
+import { useId, useState } from "react";
 import toast from "react-hot-toast";
 
 interface ShadowPreviewProps {
+	shadowMode: "box" | "text";
 	cssValue: string;
 	tailwindClass: string;
+	textShadowValue: string;
 	isRemoveShadow: boolean;
 	setIsRemoveShadow: React.Dispatch<React.SetStateAction<boolean>>;
 	isEdited: boolean;
@@ -38,11 +40,17 @@ interface ShadowPreviewProps {
 	setShadowName: React.Dispatch<React.SetStateAction<string>>;
 	saveCurrentShadow: () => void;
 	activeShadow: ShadowPreset | null;
+	previewBackground: string;
+	setPreviewBackground: React.Dispatch<React.SetStateAction<string>>;
+	previewSurfaceColor: string;
+	setPreviewSurfaceColor: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function ShadowPreview({
+	shadowMode,
 	cssValue,
 	tailwindClass,
+	textShadowValue,
 	isRemoveShadow,
 	setIsRemoveShadow,
 	isEdited,
@@ -50,9 +58,21 @@ export default function ShadowPreview({
 	setShadowName,
 	saveCurrentShadow,
 	activeShadow,
+	previewBackground,
+	setPreviewBackground,
+	previewSurfaceColor,
+	setPreviewSurfaceColor,
 }: ShadowPreviewProps) {
 	const [copiedTailwind, setCopiedTailwind] = useState(false);
 	const [copiedCss, setCopiedCss] = useState(false);
+	const backgroundPickerId = useId();
+
+	const twValue =
+		shadowMode === "text"
+			? `[text-shadow:${textShadowValue.replaceAll(" ", "_")}]`
+			: tailwindClass;
+	const cssProperty = shadowMode === "text" ? "text-shadow" : "box-shadow";
+	const cssOutputValue = shadowMode === "text" ? textShadowValue : cssValue;
 
 	const copyToClipboard = (text: string, isTailwind = true) => {
 		navigator.clipboard.writeText(text);
@@ -71,8 +91,11 @@ export default function ShadowPreview({
 	};
 
 	return (
-		<ScrollArea className="col-span-12 max-h-[95vh] w-full md:col-span-7 lg:col-span-4 xl:col-span-5">
-			<Tabs defaultValue="preview" className="relative h-full w-full">
+		<ScrollArea className="h-full w-full">
+			<Tabs
+				defaultValue="preview"
+				className="relative flex h-full w-full flex-col"
+			>
 				<TabsList className="absolute top-1.5 right-1.5 z-10 bg-neutral-950 dark:bg-black">
 					<TabsTrigger
 						value="preview"
@@ -88,7 +111,10 @@ export default function ShadowPreview({
 					</TabsTrigger>
 				</TabsList>
 
-				<TabsContent value="preview" className="relative mt-0 space-y-6">
+				<TabsContent
+					value="preview"
+					className="relative mt-0 flex h-full min-h-0 flex-col gap-4"
+				>
 					<div className="absolute top-2 left-2 flex items-center gap-1">
 						<TooltipProvider>
 							<Tooltip>
@@ -104,6 +130,7 @@ export default function ShadowPreview({
 										onClick={() => {
 											setIsRemoveShadow(!isRemoveShadow);
 										}}
+										disabled={shadowMode === "text"}
 									>
 										<svg
 											width="134"
@@ -126,7 +153,9 @@ export default function ShadowPreview({
 									</Button>
 								</TooltipTrigger>
 								<TooltipContent className="max-w-sm">
-									Check Without Shadow
+									{shadowMode === "text"
+										? "Not used for text shadows"
+										: "Check Without Shadow"}
 								</TooltipContent>
 							</Tooltip>
 							<Dialog>
@@ -134,10 +163,11 @@ export default function ShadowPreview({
 									<Button
 										variant="outline"
 										size="icon"
-										disabled={!isEdited}
+										disabled={!isEdited || shadowMode === "text"}
 										className={cn(
-											"",
-											!isEdited ? "cursor-not-allowed opacity-50" : "",
+											!isEdited || shadowMode === "text"
+												? "cursor-not-allowed opacity-50"
+												: "",
 										)}
 									>
 										<Save />
@@ -175,31 +205,102 @@ export default function ShadowPreview({
 						</TooltipProvider>
 					</div>
 
-					<Card
-						className={cn(
-							"flex h-80 items-center justify-center bg-[#ECF0F3] p-6 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:bg-card-bg",
+					<div className="absolute top-2 right-40 z-10 flex items-center gap-2 rounded-md border bg-card-bg p-1.5">
+						{["#ECF0F3", "#111827", "#fef3c7", "#dbeafe"].map((bg) => (
+							<button
+								type="button"
+								key={bg}
+								onClick={() => setPreviewBackground(bg)}
+								className={cn(
+									"h-5 w-5 rounded-full border",
+									previewBackground === bg && "ring-2 ring-primary",
+								)}
+								style={{ backgroundColor: bg }}
+							/>
+						))}
+						<label
+							htmlFor={backgroundPickerId}
+							className="group flex h-8 items-center gap-2 rounded-md border bg-card px-2 text-foreground text-xs shadow-sm"
+						>
+							<span
+								className="h-4 w-4 rounded border border-border"
+								style={{ backgroundColor: previewBackground }}
+							/>
+							<span className="font-medium uppercase">
+								Canvas {previewBackground}
+							</span>
+							<input
+								id={backgroundPickerId}
+								type="color"
+								value={previewBackground}
+								onChange={(e) =>
+									setPreviewBackground(e.target.value.toUpperCase())
+								}
+								className="sr-only"
+							/>
+						</label>
+						{shadowMode === "box" && (
+							<label
+								htmlFor={`${backgroundPickerId}-surface`}
+								className="group flex h-8 items-center gap-2 rounded-md border bg-card px-2 text-foreground text-xs shadow-sm"
+							>
+								<span
+									className="h-4 w-4 rounded border border-border"
+									style={{ backgroundColor: previewSurfaceColor }}
+								/>
+								<span className="font-medium uppercase">
+									Surface {previewSurfaceColor}
+								</span>
+								<input
+									id={`${backgroundPickerId}-surface`}
+									type="color"
+									value={previewSurfaceColor}
+									onChange={(e) =>
+										setPreviewSurfaceColor(e.target.value.toUpperCase())
+									}
+									className="sr-only"
+								/>
+							</label>
 						)}
+					</div>
+
+					<Card
+						className="flex min-h-[360px] flex-1 items-center justify-center p-6 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]"
+						style={{ backgroundColor: previewBackground }}
 					>
-						<div
-							className={`h-40 w-40 rounded-lg bg-neutral-100 dark:bg-neutral-950 ${
-								isRemoveShadow ? "border dark:border-none" : ""
-							}`}
-							style={{
-								boxShadow: isRemoveShadow ? undefined : cssValue,
-							}}
-						/>
+						{shadowMode === "text" ? (
+							<div className="rounded-lg border bg-card px-8 py-6">
+								<p
+									className="font-bold text-5xl"
+									style={{ textShadow: textShadowValue }}
+								>
+									Text Shadow
+								</p>
+							</div>
+						) : (
+							<div
+								className={`h-40 w-40 rounded-lg ${
+									isRemoveShadow ? "border dark:border-none" : ""
+								}`}
+								style={{
+									backgroundColor: previewSurfaceColor,
+									boxShadow: isRemoveShadow ? undefined : cssValue,
+								}}
+							/>
+						)}
 					</Card>
-					<Card className="bg-card-bg p-6 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
-						<h3 className="mb-2 font-medium text-lg">Tailwind Class</h3>
+
+					<Card className="shrink-0 bg-card-bg p-6 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
+						<h3 className="mb-2 font-medium text-lg">Tailwind CSS v4 Class</h3>
 						<div className="mb-4 flex items-center gap-2">
 							<code className="flex-1 overflow-auto rounded-md border bg-main p-2 text-gray-700 text-sm dark:text-gray-300">
-								{tailwindClass}
+								{twValue}
 							</code>
 							<Button
 								size="icon"
 								variant="outline"
 								className="border-0"
-								onClick={() => copyToClipboard(tailwindClass)}
+								onClick={() => copyToClipboard(twValue)}
 							>
 								{copiedTailwind ? (
 									<Check className="h-4 w-4" />
@@ -212,14 +313,14 @@ export default function ShadowPreview({
 						<h3 className="mb-2 font-medium text-lg">CSS Value</h3>
 						<div className="flex items-center gap-2">
 							<code className="flex flex-1 overflow-x-auto rounded-md border bg-main p-2 text-gray-700 text-sm dark:text-gray-300">
-								box-shadow: {cssValue}
+								{cssProperty}: {cssOutputValue}
 							</code>
 							<Button
 								size="icon"
 								variant="outline"
 								className="border-0"
 								onClick={() =>
-									copyToClipboard(`box-shadow: ${cssValue};`, false)
+									copyToClipboard(`${cssProperty}: ${cssOutputValue};`, false)
 								}
 							>
 								{copiedCss ? (
@@ -231,7 +332,7 @@ export default function ShadowPreview({
 						</div>
 					</Card>
 				</TabsContent>
-				<TabsContent value="code" className="mt-0">
+				<TabsContent value="code" className="mt-0 h-full min-h-0">
 					<div className="w-full overflow-y-hidden rounded-xl border bg-card-bg p-4 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
 						<h3 className="mb-4 font-medium text-lg">
 							How to use in your project
@@ -239,107 +340,50 @@ export default function ShadowPreview({
 
 						<div className="space-y-4">
 							<div>
-								<h4 className="mb-2 font-medium">Using Tailwind Classes</h4>
-								<div className="relative">
-									<CopyToClipboard text={`${tailwindClass}`} />
-									<code className="block overflow-x-auto rounded-md border bg-main p-3 text-gray-700 text-sm dark:text-gray-300">
-										{`<div className="${tailwindClass}">Your content here</div>`}
-									</code>
-								</div>
-							</div>
-
-							<div>
-								<h4 className="mb-2 font-medium">Using Custom CSS</h4>
-								<div className="relative">
-									<CopyToClipboard text={`${cssValue}`} />
-									<code className="relative block overflow-x-auto rounded-md border bg-main p-3 text-gray-700 text-sm dark:text-gray-300">
-										{`<div style={{ boxShadow: "${cssValue}" }}>Your content here</div>`}
-									</code>
-								</div>
-							</div>
-
-							<div>
 								<h4 className="mb-2 font-medium">
-									Extending Tailwind Config (v3)
+									Using Tailwind CSS v4 Arbitrary Value
 								</h4>
 								<div className="relative">
-									<CopyToClipboard
-										text={`module.exports = {
-  theme: {
-    extend: {
-      boxShadow: {
-        '${activeShadow?.shadowName || activeShadow?.name || "custom"}': '${cssValue}',
-      }
-    }
-  }
-}`}
-									/>
-									<code className="relative block overflow-x-auto whitespace-pre rounded-md border bg-main p-3 text-gray-700 text-sm dark:text-gray-300">
-										{`// tailwind.config.js
-module.exports = {
-  theme: {
-    extend: {
-      boxShadow: {
-        '${activeShadow?.shadowName || activeShadow?.name || "custom"}': '${cssValue}',
-      }
-    }
-  }
-}`}
+									<CopyToClipboard text={twValue} />
+									<code className="block overflow-x-auto rounded-md border bg-main p-3 text-gray-700 text-sm dark:text-gray-300">
+										{`<div className="${twValue}">Your content here</div>`}
 									</code>
 								</div>
+							</div>
+
+							<div>
+								<h4 className="mb-2 font-medium">Using Inline Style</h4>
+								<div className="relative">
+									<CopyToClipboard text={cssOutputValue} />
+									<code className="relative block overflow-x-auto rounded-md border bg-main p-3 text-gray-700 text-sm dark:text-gray-300">
+										{shadowMode === "text"
+											? `<h2 style={{ textShadow: "${textShadowValue}" }}>Text Shadow</h2>`
+											: `<div style={{ boxShadow: \"${cssValue}\" }}>Your content here</div>`}
+									</code>
+								</div>
+							</div>
+
+							<div>
 								<h4 className="mt-1 mb-2 font-medium">
-									Extending global.css (v4)
+									Tailwind CSS v4 @theme Token
 								</h4>
 								<div className="relative">
 									<CopyToClipboard
-										text={`
-  --shadow-${activeShadow?.shadowName || activeShadow?.name || "custom"}: ${cssValue}; 
-`}
+										text={`@theme {\n  --shadow-${activeShadow?.shadowName || activeShadow?.name || "custom"}: ${cssOutputValue};\n}`}
 									/>
 									<code className="relative block overflow-x-auto whitespace-pre rounded-md border bg-main p-3 text-gray-700 text-sm dark:text-gray-300">
-										{`// global.css
-@theme {
-  --shadow-${activeShadow?.shadowName || activeShadow?.name || "custom"}: ${cssValue}; 
-  }
-  `}
+										{`// global.css\n@theme {\n  --shadow-${activeShadow?.shadowName || activeShadow?.name || "custom"}: ${cssOutputValue};\n}`}
 									</code>
 								</div>
 								<p className="mt-2 text-muted-foreground text-sm dark:text-gray-400">
-									Then use it with:{" "}
+									Then use it with{" "}
 									<code className="rounded bg-main px-1 py-0.5">
-										shadow-custom
+										{shadowMode === "text"
+											? "[text-shadow:var(--shadow-custom)]"
+											: "shadow-custom"}
 									</code>
 								</p>
 							</div>
-						</div>
-
-						<div className="mt-6">
-							<a
-								href="https://tailwindcss.com/docs/box-shadow"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="flex items-center gap-1 text-primary text-sm hover:underline"
-							>
-								Tailwind CSS Shadow Documentation
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									width="24"
-									height="24"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									className="h-3 w-3"
-									aria-hidden="true"
-									focusable="false"
-								>
-									<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-									<polyline points="15 3 21 3 21 9" />
-									<line x1="10" y1="14" x2="21" y2="3" />
-								</svg>
-							</a>
 						</div>
 					</div>
 				</TabsContent>
