@@ -8,6 +8,9 @@ export const metadata: Metadata = {
 		"Color Lab – Generate Color Palettes, Convert Codes & Build Shadcn Themes",
 	description:
 		"Color Lab is your all-in-one color and UI toolkit. Create stunning palettes, convert between HEX, RGB, HSL, and design custom themes with the built-in Shadcn UI Theme Generator – ideal for designers and frontend developers.",
+	alternates: {
+		canonical: "/color-lab",
+	},
 	keywords: [
 		"Color palette generator",
 		"Color converter HEX to RGB",

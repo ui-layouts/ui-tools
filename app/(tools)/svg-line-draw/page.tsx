@@ -6,6 +6,9 @@ export const metadata: Metadata = {
 	title: "SVG Line Draw – Sketch & Animate Hand-Drawn Lines for the Web",
 	description:
 		"SVG Line Draw is your creative playground for sketching hand-drawn lines, arrows, highlights, and animations. Perfect for annotations, web design, and interactive storytelling.",
+	alternates: {
+		canonical: "/svg-line-draw",
+	},
 	keywords: [
 		"SVG line drawing tool",
 		"Hand-drawn SVG lines",

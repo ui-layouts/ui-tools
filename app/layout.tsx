@@ -7,6 +7,7 @@ import { siteConfig } from "@/lib/utils";
 import Script from "next/script";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "sonner";
+import schema from "./schema";
 
 const poppins = Space_Grotesk({
 	subsets: ["latin"],
@@ -19,6 +20,9 @@ export const metadata: Metadata = {
 		template: `%s - ${siteConfig.name}`,
 	},
 	metadataBase: new URL(siteConfig.url),
+	alternates: {
+		canonical: "/",
+	},
 	description: siteConfig.description,
 	keywords: [
 		"box-shadow generator",
@@ -104,6 +108,10 @@ export const metadata: Metadata = {
 		apple: "/apple-touch-icon.png",
 	},
 	manifest: `${siteConfig.url}/site.webmanifest`,
+	robots: {
+		index: true,
+		follow: true,
+	},
 };
 
 export default function RootLayout({
@@ -124,6 +132,13 @@ export default function RootLayout({
               gtag('js', new Date());
               gtag('config', 'G-5G7F4C09QB');
         `}
+			</Script>
+			<Script
+				id="global-schema"
+				type="application/ld+json"
+				strategy="beforeInteractive"
+			>
+				{schema()}
 			</Script>
 			<body suppressHydrationWarning className={`${poppins.className}`}>
 				<NuqsAdapter>
