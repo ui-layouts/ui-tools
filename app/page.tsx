@@ -2,23 +2,25 @@ import HomeIndex from "@/components/view/home";
 import { siteConfig } from "@/lib/utils";
 import type { Metadata } from "next";
 
+const PAGE_TITLE = "UI Tools for Designers and Developers";
+const PAGE_DESCRIPTION =
+	"Free open-source UI tools for developers and designers: generate shadows, clip-paths, mesh gradients, color palettes, backgrounds, and SVG line drawings.";
+
 export const metadata: Metadata = {
-	title: "UI Tools for Designers and Developers",
-	description:
-		"Free open-source UI tools for developers and designers: generate shadows, clip-paths, mesh gradients, color palettes, backgrounds, and SVG line drawings.",
-	alternates: {
-		canonical: "/",
-	},
+	title: PAGE_TITLE,
+	description: PAGE_DESCRIPTION,
+
+	
 };
 
 export default function Home() {
 	const webpageSchema = {
 		"@context": "https://schema.org",
 		"@type": "WebPage",
-		name: "UI Tools for Designers and Developers",
+		name: PAGE_TITLE,
 		url: siteConfig.url,
-		description:
-			"Free open-source UI tools for developers and designers: generate shadows, clip-paths, mesh gradients, color palettes, backgrounds, and SVG line drawings.",
+		description: PAGE_DESCRIPTION,
+
 		breadcrumb: {
 			"@type": "BreadcrumbList",
 			itemListElement: [
