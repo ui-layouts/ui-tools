@@ -4,44 +4,41 @@ import type { Metadata } from "next";
 
 const PAGE_TITLE = "UI Tools for Designers and Developers";
 const PAGE_DESCRIPTION =
-	"Free open-source UI tools for developers and designers: generate shadows, clip-paths, mesh gradients, color palettes, backgrounds, and SVG line drawings.";
+  "Free open-source UI tools for developers and designers: generate shadows, clip-paths, mesh gradients, color palettes, backgrounds, and SVG line drawings.";
 
 export const metadata: Metadata = {
-	title: PAGE_TITLE,
-	description: PAGE_DESCRIPTION,
-
-	
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
 };
 
 export default function Home() {
-	const webpageSchema = {
-		"@context": "https://schema.org",
-		"@type": "WebPage",
-		name: PAGE_TITLE,
-		url: siteConfig.url,
-		description: PAGE_DESCRIPTION,
+  const webpageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: PAGE_TITLE,
+    url: siteConfig.url,
+    description: PAGE_DESCRIPTION,
 
-		breadcrumb: {
-			"@type": "BreadcrumbList",
-			itemListElement: [
-				{
-					"@type": "ListItem",
-					position: 1,
-					name: "Home",
-					item: siteConfig.url,
-				},
-			],
-		},
-	};
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: siteConfig.url,
+        },
+      ],
+    },
+  };
 
-	return (
-		<>
-			<script
-				type="application/ld+json"
-				// biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be emitted as raw script content in server HTML.
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(webpageSchema) }}
-			/>
-			<HomeIndex />
-		</>
-	);
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webpageSchema) }}
+      />
+      <HomeIndex />
+    </>
+  );
 }
