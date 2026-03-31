@@ -20,6 +20,9 @@ export const metadata: Metadata = {
 		template: `%s - ${siteConfig.name}`,
 	},
 	metadataBase: new URL(siteConfig.url),
+	alternates: {
+		canonical: "/",
+	},
 	description: siteConfig.description,
 	keywords: [
 		"box-shadow generator",
