@@ -6,6 +6,9 @@ export const metadata: Metadata = {
 	title: "Shadows Generator",
 	description:
 		"Generate beautiful CSS and Tailwind CSS v3/v4 box-shadows and text-shadows. Perfect for modern UI, glassmorphism, and soft design systems.",
+	alternates: {
+		canonical: "/shadows",
+	},
 	keywords: [
 		"CSS shadows generator",
 		"box-shadow generator",

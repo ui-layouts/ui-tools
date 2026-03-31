@@ -6,6 +6,9 @@ export const metadata: Metadata = {
 	title: "Mesh-Gradient Generator",
 	description:
 		"Create beautiful mesh gradients and fluid color transitions for your web designs. Perfect for modern UI and backgrounds.",
+	alternates: {
+		canonical: "/mesh-gradients",
+	},
 	keywords: [
 		"mesh gradient",
 		"CSS mesh gradient generator",
