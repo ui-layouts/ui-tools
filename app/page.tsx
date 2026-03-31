@@ -1,7 +1,6 @@
 import HomeIndex from "@/components/view/home";
 import { siteConfig } from "@/lib/utils";
 import type { Metadata } from "next";
-import Script from "next/script";
 
 export const metadata: Metadata = {
 	title: "UI Tools for Designers and Developers",
@@ -13,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-	const websiteSchema = {
+	const webpageSchema = {
 		"@context": "https://schema.org",
 		"@type": "WebPage",
 		name: "UI Tools for Designers and Developers",
@@ -33,34 +32,13 @@ export default function Home() {
 		},
 	};
 
-	const faqSchema = {
-		"@context": "https://schema.org",
-		"@type": "FAQPage",
-		mainEntity: [
-			{
-				"@type": "Question",
-				name: "Are these UI tools free to use?",
-				acceptedAnswer: {
-					"@type": "Answer",
-					text: "Yes. UI Tools is free and open-source for designers and developers.",
-				},
-			},
-			{
-				"@type": "Question",
-				name: "Which tools are available?",
-				acceptedAnswer: {
-					"@type": "Answer",
-					text: "You can use Shadow Generator, SVG Clip-Path Generator, Mesh Gradient Creator, Background Snippets, Color Lab, and SVG Line Draw.",
-				},
-			},
-		],
-	};
-
 	return (
 		<>
-			<Script id="homepage-schema" type="application/ld+json">
-				{JSON.stringify([websiteSchema, faqSchema])}
-			</Script>
+			<script
+				type="application/ld+json"
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be emitted as raw script content in server HTML.
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(webpageSchema) }}
+			/>
 			<HomeIndex />
 		</>
 	);

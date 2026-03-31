@@ -133,13 +133,11 @@ export default function RootLayout({
               gtag('config', 'G-5G7F4C09QB');
         `}
 			</Script>
-			<Script
-				id="global-schema"
+			<script
 				type="application/ld+json"
-				strategy="beforeInteractive"
-			>
-				{schema()}
-			</Script>
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be server-rendered as raw script content for crawlers.
+				dangerouslySetInnerHTML={{ __html: schema() }}
+			/>
 			<body suppressHydrationWarning className={`${poppins.className}`}>
 				<NuqsAdapter>
 					<ThemeProvider attribute="class">
