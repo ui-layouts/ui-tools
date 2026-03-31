@@ -7,6 +7,7 @@ import { siteConfig } from "@/lib/utils";
 import Script from "next/script";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "sonner";
+import schema from "./schema";
 
 const poppins = Space_Grotesk({
 	subsets: ["latin"],
@@ -104,6 +105,10 @@ export const metadata: Metadata = {
 		apple: "/apple-touch-icon.png",
 	},
 	manifest: `${siteConfig.url}/site.webmanifest`,
+	robots: {
+		index: true,
+		follow: true,
+	},
 };
 
 export default function RootLayout({
@@ -125,6 +130,11 @@ export default function RootLayout({
               gtag('config', 'G-5G7F4C09QB');
         `}
 			</Script>
+			<script
+				type="application/ld+json"
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be server-rendered as raw script content for crawlers.
+				dangerouslySetInnerHTML={{ __html: schema() }}
+			/>
 			<body suppressHydrationWarning className={`${poppins.className}`}>
 				<NuqsAdapter>
 					<ThemeProvider attribute="class">

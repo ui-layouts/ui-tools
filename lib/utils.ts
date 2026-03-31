@@ -234,3 +234,48 @@ export const siteConfig = {
 		github: "https://github.com/naymurdev",
 	},
 };
+
+export const TOOL_SLUGS = [
+	"background-snippets",
+	"clip-paths",
+	"color-lab",
+	"mesh-gradients",
+	"shadows",
+	"svg-line-draw",
+] as const;
+
+export const TOOL_SCHEMA_DETAILS: Record<
+	(typeof TOOL_SLUGS)[number],
+	{ name: string; description: string }
+> = {
+	"background-snippets": {
+		name: "Background Snippets Generator",
+		description:
+			"Generate beautiful CSS background patterns, gradients, and textures for your website",
+	},
+	"clip-paths": {
+		name: "SVG Clip-Path Generator",
+		description:
+			"Create and customize SVG clip-path shapes for modern web design",
+	},
+	"color-lab": {
+		name: "Color Lab",
+		description:
+			"Generate color palettes, convert between formats, and create Shadcn UI themes",
+	},
+	"mesh-gradients": {
+		name: "Mesh Gradient Generator",
+		description:
+			"Create beautiful mesh gradients and fluid color transitions for web designs",
+	},
+	shadows: {
+		name: "CSS Shadow Generator",
+		description:
+			"Generate beautiful CSS and Tailwind CSS box-shadows and text-shadows",
+	},
+	"svg-line-draw": {
+		name: "SVG Line Draw",
+		description:
+			"Create hand-drawn SVG lines, arrows, and animations for web design",
+	},
+};

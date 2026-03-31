@@ -6,6 +6,9 @@ export const metadata: Metadata = {
 	title: "SVG Clip-Path Generator",
 	description:
 		"Create and customize SVG clip-path shapes for your website with ease. Free tool for web designers and developers.",
+	alternates: {
+		canonical: "/clip-paths",
+	},
 	keywords: [
 		"SVG clip-path generator",
 		"SVG editor",
