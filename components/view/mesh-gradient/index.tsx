@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { cn } from "@/lib/utils";
 import type {
@@ -15,7 +14,6 @@ import type {
 } from "@/types/shader-gradient";
 import { ShaderGradientCanvas } from "@shadergradient/react";
 import { ShaderGradient } from "@shadergradient/react";
-import { Bookmark, ChevronsDown, PanelsTopLeft, Settings2 } from "lucide-react";
 import { type JSX, Suspense, useState } from "react";
 import { ControlPanel } from "./control-panel";
 import { CopyCode } from "./copy-code";
@@ -256,12 +254,11 @@ const allControls: ControlSections = {
 
 export function ShaderGradientGenerator(): JSX.Element {
 	const isMobile = useMediaQuery("(max-width:1024px)");
-	const [viewAll, setViewAll] = useState(false);
+	const [viewAll] = useState(false);
 
 	const [settings, setSettings] =
 		useState<ShaderGradientSettings>(defaultSettings);
 	const [selectedExample, setSelectedExample] = useState<string>("");
-	const [activeSidebarTab, setActiveSidebarTab] = useState<"presets" | "settings" | "saved">("presets");
 	const updateSettings = (
 		newSettings: Partial<ShaderGradientSettings>,
 	): void => {
@@ -270,31 +267,6 @@ export function ShaderGradientGenerator(): JSX.Element {
 
 	return (
 		<>
-			<article className="space-y-3 pb-8">
-				<h1 className="text-center font-medium text-2xl sm:text-3xl md:text-5xl">
-					Creative Mesh-Gradient <br /> For Developers
-				</h1>
-
-				<div className="mx-auto flex w-fit items-center justify-center gap-2 font-semibold">
-					<div className="flex gap-2 rounded-md border bg-card-bg p-2 shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
-						Expand
-						<Switch
-							id="view-all-switch"
-							checked={viewAll}
-							onCheckedChange={setViewAll}
-							className="bg-main"
-						/>
-					</div>
-					<a
-						href="#editor"
-						className="group flex cursor-pointer gap-1 rounded-md border bg-card-bg p-2 text-primary shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] hover:bg-accent dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0"
-					>
-						Click to Editor
-						<ChevronsDown />
-					</a>
-				</div>
-			</article>
-
 			<div
 				className={cn(
 					"xl:overflow-none relative mx-auto grid w-[80%] max-w-screen-lg grid-cols-3 gap-2 overflow-hidden pb-10 sm:gap-4 lg:grid-cols-4 lg:gap-8 lg:pb-10 xl:max-w-screen-xl xl:grid-cols-5 2xl:gap-10",
