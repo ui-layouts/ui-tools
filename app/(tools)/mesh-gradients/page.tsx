@@ -2,7 +2,6 @@ import { ShaderGradientGenerator } from "@/components/view/mesh-gradient";
 import { siteConfig } from "@/lib/utils";
 import type { Metadata } from "next";
 import React from "react";
-import { ToolPlaygroundShell } from "@/components/common/tool-playground-shell";
 export const metadata: Metadata = {
 	title: "Mesh-Gradient Generator",
 	description:
@@ -52,18 +51,7 @@ export const metadata: Metadata = {
 };
 
 function page() {
-	return (
-		<ToolPlaygroundShell
-			title="Mesh Gradient Generator"
-			description="Build fluid mesh gradients with draggable color points."
-			examples={["Aurora", "Sunset", "Neon", "Pastel"]}
-			docs="Use Playground for live editing, Examples to load quick presets, and Export to copy production-ready output."
-			exportLabel="CSS"
-			exportCode={`/* export output from active tool */`}
-		>
-			<ShaderGradientGenerator />
-		</ToolPlaygroundShell>
-	);
+	return <ShaderGradientGenerator />;
 }
 
 export default page;

@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { cn } from "@/lib/utils";
 import type {
@@ -15,7 +15,8 @@ import type {
 } from "@/types/shader-gradient";
 import { ShaderGradientCanvas } from "@shadergradient/react";
 import { ShaderGradient } from "@shadergradient/react";
-import { ChevronsDown, Menu, MenuIcon } from "lucide-react";
+import { Bookmark, PanelsTopLeft, Settings2 } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import { type JSX, Suspense, useState } from "react";
 import { ControlPanel } from "./control-panel";
 import { CopyCode } from "./copy-code";
@@ -256,11 +257,13 @@ const allControls: ControlSections = {
 
 export function ShaderGradientGenerator(): JSX.Element {
 	const isMobile = useMediaQuery("(max-width:1024px)");
-	const [viewAll, setViewAll] = useState(false);
-
 	const [settings, setSettings] =
 		useState<ShaderGradientSettings>(defaultSettings);
 	const [selectedExample, setSelectedExample] = useState<string>("");
+	const [activeSidebarTab, setActiveSidebarTab] = useState<"presets" | "settings" | "saved">("settings");
+	const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+	const pathname = usePathname();
+	const router = useRouter();
 	const updateSettings = (
 		newSettings: Partial<ShaderGradientSettings>,
 	): void => {
@@ -269,106 +272,73 @@ export function ShaderGradientGenerator(): JSX.Element {
 
 	return (
 		<>
-			<article className="space-y-3 pb-8">
-				<h1 className="text-center font-medium text-2xl sm:text-3xl md:text-5xl">
-					Creative Mesh-Gradient <br /> For Developers
-				</h1>
-
-				<div className="mx-auto flex w-fit items-center justify-center gap-2 font-semibold">
-					<div className="flex gap-2 rounded-md border bg-card-bg p-2 shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
-						Expand
-						<Switch
-							id="view-all-switch"
-							checked={viewAll}
-							onCheckedChange={setViewAll}
-							className="bg-main"
-						/>
-					</div>
-					<a
-						href="#editor"
-						className="group flex cursor-pointer gap-1 rounded-md border bg-card-bg p-2 text-primary shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] hover:bg-accent dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0"
-					>
-						Click to Editor
-						<ChevronsDown />
-					</a>
-				</div>
-			</article>
-
-			<div
-				className={cn(
-					"xl:overflow-none relative mx-auto grid w-[80%] max-w-screen-lg grid-cols-3 gap-2 overflow-hidden pb-10 sm:gap-4 lg:grid-cols-4 lg:gap-8 lg:pb-10 xl:max-w-screen-xl xl:grid-cols-5 2xl:gap-10",
-					viewAll ? "h-full" : "lg:h-[28rem]",
-				)}
-			>
-				{!viewAll && (
-					<div className="absolute bottom-0 left-0 z-10 grid h-60 w-full place-content-center bg-gradient-to-t from-42% from-white dark:from-black" />
-				)}
-
-				{(viewAll ? ExampleGradients : ExampleGradients.slice(0, 10)).map(
-					(mesh) => (
-						<div
-							key={mesh.id}
-							className="relative grid aspect-square w-full cursor-pointer place-items-center rounded-lg border bg-card-bg p-2 shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] lg:p-5 2xl:h-48 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-neutral-950"
-							onClick={() => {
-								setSelectedExample(mesh.id);
-								setSettings(mesh?.settings);
-							}}
-							onKeyDown={(e) => {
-								if (e.key === "Enter") {
-									setSelectedExample(mesh.id);
-									setSettings(mesh?.settings);
-								}
-							}}
-						>
-							<div
-								className="relative h-full w-full overflow-hidden rounded-md"
-								style={{
-									background: `linear-gradient(135deg, ${mesh.settings.color1}, ${mesh.settings.color2}, ${mesh.settings.color3})`,
-								}}
-							>
-								{mesh?.settings?.grain === "on" && (
-									<div className=" absolute top-0 left-0 h-full w-full bg-[url('/noise.gif')] opacity-10" />
-								)}
-							</div>
-						</div>
-					),
-				)}
-			</div>
 			{isMobile && (
 				<p className="pb-2 text-center text-primary/60">
 					Please use a desktop/laptop to view the Editor.
 				</p>
 			)}
 
-			<div
-				className="relative mx-auto w-full gap-3 px-3 pb-5 lg:container lg:grid lg:grid-cols-12 lg:px-0 xl:grid-cols-4"
-				id="editor"
-			>
-				{/* Left Column: Control Panel */}
-				{!isMobile && (
-					<div
-						className={
-							"relative inset-shadow-[0_1px_rgb(0_0_0/0.10)] h-[95vh] rounded-xl border bg-card-bg lg:z-0 lg:col-span-4 lg:block lg:max-h-[95vh] lg:w-full xl:col-span-1 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0 "
-						}
-					>
-						<ScrollArea className=" h-full rounded-xl p-3">
-							<ControlPanel
-								settings={settings}
-								updateSettings={updateSettings}
-								sections={allControls}
+				<div className="h-full w-full overflow-hidden p-3" id="editor">
+					<div className={cn("relative grid h-full min-h-0 gap-3", isMobile ? "grid-cols-1" : isSidebarExpanded ? "lg:grid-cols-[70px_320px_minmax(0,1fr)]" : "lg:grid-cols-[70px_0px_minmax(0,1fr)]")}>
+						{!isMobile && <div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
+							<div className="space-y-2">
+								{[{ key: "presets", label: "Presets", icon: PanelsTopLeft }, { key: "settings", label: "Settings", icon: Settings2 }, { key: "saved", label: "Saved", icon: Bookmark }].map((item) => (
+									<button type="button" key={item.key} onClick={() => { setIsSidebarExpanded(true); setActiveSidebarTab(item.key as "presets" | "settings" | "saved"); }} className={cn("grid h-16 w-full place-items-center rounded-md border px-1 py-1 font-semibold text-[11px]", activeSidebarTab === item.key ? "border-primary bg-primary text-primary-foreground" : "bg-main")}>
+										<item.icon className="h-4 w-4" />
+										<span>{item.label}</span>
+									</button>
+								))}
+							</div>
+							<Select value={pathname} onValueChange={(value) => router.push(value)}>
+								<SelectTrigger className="h-9 px-2 text-[10px]"><SelectValue placeholder="Go to editor..." /></SelectTrigger>
+								<SelectContent><SelectItem value="/mesh-gradients">Mesh</SelectItem><SelectItem value="/background-snippets">BG</SelectItem><SelectItem value="/color-lab">Color</SelectItem></SelectContent>
+							</Select>
+						</div>}
+						{!isMobile && <div className={cn("inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-3 lg:block dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0", !isSidebarExpanded && "pointer-events-none w-0 overflow-hidden border-0 p-0 opacity-0")}>
+							<ScrollArea className="h-full">
+								{activeSidebarTab === "settings" && <ControlPanel
+									settings={settings}
+									updateSettings={updateSettings}
+									sections={allControls}
 								sectionClassNames={{
 									basic: "bg-main border 2xl:p-4 p-2 rounded-lg",
 									effects: "bg-main border 2xl:p-4 p-2 rounded-lg",
 									position: "bg-main border 2xl:p-4 p-2 rounded-lg",
 									camera: "bg-main border 2xl:p-4 p-2 rounded-lg",
 								}}
-							/>
-						</ScrollArea>
-					</div>
-				)}
+								/>}
+								{activeSidebarTab === "presets" && (
+									<div className="grid grid-cols-2 gap-2">
+										{ExampleGradients.map((example) => (
+											<Button
+												key={example.id}
+												variant="empty"
+												onClick={() => {
+													setSelectedExample(example.id);
+													setSettings(example.settings);
+												}}
+												className={cn(
+													"relative h-20 w-full overflow-hidden rounded-md border p-1",
+													selectedExample === example.id && "bg-main",
+												)}
+											>
+												<div
+													className="h-full w-full rounded-md"
+													style={{
+														background: `linear-gradient(135deg, ${example.settings.color1}, ${example.settings.color2}, ${example.settings.color3})`,
+													}}
+												/>
+											</Button>
+										))}
+									</div>
+								)}
+								{activeSidebarTab === "saved" && <p className="text-sm text-primary/60">Saved gradients will appear here.</p>}
+							</ScrollArea>
+						</div>}
 
 				{/* Middle Column: Gradient Preview */}
-				<div className="relative flex h-full flex-col gap-2 lg:col-span-8 lg:h-[95vh] xl:col-span-3 ">
+					<div className="relative col-span-12 h-full min-h-0 lg:col-auto">
+					<div className="relative flex h-full flex-col gap-2 lg:h-[95vh]">
 					<div className="relative inset-shadow-[0_1px_rgb(0_0_0/0.10)] h-96 flex-grow rounded-xl border border-t-0 bg-card-bg p-2 lg:h-auto dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
 						<CopyCode settings={settings} />
 						<Suspense>
@@ -421,40 +391,9 @@ export function ShaderGradientGenerator(): JSX.Element {
 							</ShaderGradientCanvas>
 						</Suspense>
 					</div>
-					<ScrollArea className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] h-36 w-full gap-2 rounded-xl border border-t-0 bg-card-bg p-2 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0 ">
-						<div className="flex h-full w-full whitespace-nowrap">
-							{ExampleGradients.map((example, _index) => (
-								<Button
-									key={example?.id}
-									variant="empty"
-									onClick={() => {
-										setSelectedExample(example.id);
-										setSettings(example?.settings);
-									}}
-									className={cn(
-										"relative h-full w-32 shrink-0 cursor-pointer overflow-hidden rounded-md p-2",
-										selectedExample === example.id
-											? "border bg-main"
-											: "layeroutline",
-									)}
-								>
-									<div
-										className="relative h-full w-full overflow-hidden rounded-md"
-										style={{
-											background: `linear-gradient(135deg, ${example.settings.color1}, ${example.settings.color2}, ${example.settings.color3})`,
-										}}
-									>
-										{example?.settings?.grain === "on" && (
-											<div className=" absolute top-0 left-0 h-full w-full bg-[url('/noise.gif')] opacity-10" />
-										)}
-									</div>
-								</Button>
-							))}
-						</div>
-						<ScrollBar orientation="horizontal" />
-					</ScrollArea>
+					</div></div>
 				</div>
-			</div>
-		</>
+				</div>
+			</>
 	);
 }
