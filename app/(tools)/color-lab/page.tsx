@@ -1,9 +1,7 @@
-import ClipPathGenerator from "@/components/view/clip-path";
 import ColorConverter from "@/components/view/colors";
 import { siteConfig } from "@/lib/utils";
 import type { Metadata } from "next";
-import React, { Suspense } from "react";
-import { ToolPlaygroundShell } from "@/components/common/tool-playground-shell";
+import React from "react";
 export const metadata: Metadata = {
 	title:
 		"Color Lab – Generate Color Palettes, Convert Codes & Build Shadcn Themes",
@@ -69,34 +67,8 @@ export const metadata: Metadata = {
 		creator: "@naymur_dev",
 	},
 };
-const PageLoading = () => {
-	return (
-		<>
-			<div className="mx-auto h-28 w-[50%] animate-pulse rounded-lg border bg-card-bg" />
-			<div className="mx-auto grid w-[70%] grid-cols-3 gap-5 pt-10 md:grid-cols-6">
-				{Array.from({ length: 18 }).map((_, index) => (
-					<div
-						key={index}
-						className="h-36 w-full animate-pulse rounded-lg border bg-card-bg"
-					/>
-				))}
-			</div>
-		</>
-	);
-};
 function page() {
-	return (
-		<ToolPlaygroundShell
-			title="Color Lab"
-			description="Convert HEX/RGB/HSL and generate scales, contrast, and tokens."
-			examples={["Brand blue", "Sunset orange", "Mint", "Slate"]}
-			docs="Use Playground for live editing, Examples to load quick presets, and Export to copy production-ready output."
-			exportLabel="CSS Variables"
-			exportCode={`/* export output from active tool */`}
-		>
-			<ColorConverter />
-		</ToolPlaygroundShell>
-	);
+	return <ColorConverter />;
 }
 
 export default page;

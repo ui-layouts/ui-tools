@@ -2,13 +2,12 @@
 
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { useGradientStops } from "@/hooks/use-gradient-stops";
 import { cn } from "@/lib/utils";
-import { Bookmark, ChevronsDown, PanelsTopLeft, Settings2 } from "lucide-react";
+import { ChevronsDown } from "lucide-react";
 import { CodeDisplay } from "./code-output/code-display";
 import { getFullCode } from "./code-output/code-generator";
 import { ColorPickerPopover } from "./color-pickers/color-picker-popover";
@@ -63,7 +62,6 @@ export default function BackgroundPatternGenerator() {
 	const [activePresetId, setActivePresetId] = useState<string | undefined>(
 		undefined,
 	);
-	const [activeSidebarTab, setActiveSidebarTab] = useState<"presets" | "settings" | "saved">("settings");
 
 	const [gradientPositionX, setGradientPositionX] = useState(30);
 	const [gradientPositionY, setGradientPositionY] = useState(10);
@@ -283,14 +281,7 @@ export default function BackgroundPatternGenerator() {
 				{!isMobile && (
 					<ScrollArea className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] max-h-[95vh] rounded-xl border bg-card-bg p-3 lg:col-span-4 xl:col-span-1 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0 ">
 						<div className="space-y-3">
-							<div className="grid grid-cols-3 gap-2">
-								{[{ key: "presets", icon: PanelsTopLeft }, { key: "settings", icon: Settings2 }, { key: "saved", icon: Bookmark }].map(({ key, icon: Icon }) => (
-									<Button key={key} variant="empty" className={cn("h-9 rounded-md border", activeSidebarTab === key && "bg-main")} onClick={() => setActiveSidebarTab(key as "presets" | "settings" | "saved")}>
-										<Icon className="size-4" />
-									</Button>
-								))}
-							</div>
-							{activeSidebarTab === "settings" && <div className="space-y-2 rounded-lg border bg-main p-3">
+							<div className="space-y-2 rounded-lg border bg-main p-3">
 								<ColorPickerPopover
 									color={bgColor}
 									onChange={setBgColor}
@@ -347,8 +338,8 @@ export default function BackgroundPatternGenerator() {
 									maskFade={maskFade}
 									setMaskFade={setMaskFade}
 								/>
-							</div>}
-							{activeSidebarTab === "settings" && <div className="rounded-lg border bg-main">
+							</div>
+							<div className="rounded-lg border bg-main">
 								<GradientControls
 									useGradient={useGradient}
 									setUseGradient={setUseGradient}
@@ -373,18 +364,7 @@ export default function BackgroundPatternGenerator() {
 									setDragIndex={setDragIndex}
 									dragIndex={dragIndex}
 								/>
-							</div>}
-							{activeSidebarTab === "presets" && (
-								<PresetGallery
-									onSelectPreset={handleSelectPreset}
-									activePresetId={activePresetId}
-								/>
-							)}
-							{activeSidebarTab === "saved" && (
-								<p className="rounded-lg border bg-main p-3 text-sm text-primary/60">
-									Saved snippets will appear here after save support is added.
-								</p>
-							)}
+							</div>
 							{/* <div className="bg-main rounded-lg border">
              
             </div> */}
