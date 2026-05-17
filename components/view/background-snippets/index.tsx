@@ -226,11 +226,6 @@ export default function BackgroundPatternGenerator() {
 
 	return (
 		<>
-			{isMobile && (
-				<p className="pb-2 text-center text-primary/60">
-					Please use a desktop/laptop to view the Editor.
-				</p>
-			)}
 			<div className="h-full w-full overflow-hidden p-3" id="editor">
 				<div className={cn("relative grid h-full min-h-0 gap-3", isMobile ? "grid-cols-1" : isSidebarExpanded ? "lg:grid-cols-[70px_320px_minmax(0,1fr)]" : "lg:grid-cols-[70px_0px_minmax(0,1fr)]")}>
 					{!isMobile && <div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
