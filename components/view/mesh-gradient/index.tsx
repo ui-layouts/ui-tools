@@ -15,7 +15,7 @@ import type {
 } from "@/types/shader-gradient";
 import { ShaderGradientCanvas } from "@shadergradient/react";
 import { ShaderGradient } from "@shadergradient/react";
-import { ChevronsDown, Menu, MenuIcon } from "lucide-react";
+import { Bookmark, ChevronsDown, PanelsTopLeft, Settings2 } from "lucide-react";
 import { type JSX, Suspense, useState } from "react";
 import { ControlPanel } from "./control-panel";
 import { CopyCode } from "./copy-code";
@@ -261,6 +261,7 @@ export function ShaderGradientGenerator(): JSX.Element {
 	const [settings, setSettings] =
 		useState<ShaderGradientSettings>(defaultSettings);
 	const [selectedExample, setSelectedExample] = useState<string>("");
+	const [activeSidebarTab, setActiveSidebarTab] = useState<"presets" | "settings" | "saved">("presets");
 	const updateSettings = (
 		newSettings: Partial<ShaderGradientSettings>,
 	): void => {
