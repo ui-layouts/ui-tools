@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMediaQuery } from "@/components/ui/use-media-query";
+import ThemeSwitch from "@/components/theme-switcher";
 import { useGradientStops } from "@/hooks/use-gradient-stops";
 import { cn } from "@/lib/utils";
-import { Bookmark, PanelsTopLeft, Settings2 } from "lucide-react";
+import { Bookmark, PanelsTopLeft, Settings2, SidebarClose, SidebarOpen } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { CodeDisplay } from "./code-output/code-display";
 import { getFullCode } from "./code-output/code-generator";
@@ -234,7 +235,26 @@ export default function BackgroundPatternGenerator() {
 				<div className={cn("relative grid h-full min-h-0 gap-3", isMobile ? "grid-cols-1" : isSidebarExpanded ? "lg:grid-cols-[70px_320px_minmax(0,1fr)]" : "lg:grid-cols-[70px_0px_minmax(0,1fr)]")}>
 					{!isMobile && <div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
 						<div className="space-y-2">{[{ key: "presets", label: "Presets", icon: PanelsTopLeft }, { key: "settings", label: "Settings", icon: Settings2 }, { key: "saved", label: "Saved", icon: Bookmark }].map((item)=><button type="button" key={item.key} onClick={()=>{setIsSidebarExpanded(true);setActiveSidebarTab(item.key as "presets"|"settings"|"saved");}} className={cn("grid h-16 w-full place-items-center rounded-md border px-1 py-1 font-semibold text-[11px]",activeSidebarTab===item.key?"border-primary bg-primary text-primary-foreground":"bg-main")}><item.icon className="h-4 w-4"/><span>{item.label}</span></button>)}</div>
-						<Select value={pathname} onValueChange={(value)=>router.push(value)}><SelectTrigger className="h-9 px-2 text-[10px]"><SelectValue placeholder="Go to editor..." /></SelectTrigger><SelectContent><SelectItem value="/background-snippets">BG</SelectItem><SelectItem value="/mesh-gradients">Mesh</SelectItem><SelectItem value="/color-lab">Color</SelectItem></SelectContent></Select>
+						<div className="space-y-2">
+							<ThemeSwitch className="w-full rounded-lg border bg-white dark:bg-black" />
+							<Button
+								type="button"
+								variant="outline"
+								size="icon"
+								className="h-9 w-full shadow-none"
+								onClick={() => setIsSidebarExpanded((prev) => !prev)}
+							>
+								{isSidebarExpanded ? (
+									<SidebarClose className="h-4 w-4" />
+								) : (
+									<SidebarOpen className="h-4 w-4" />
+								)}
+							</Button>
+							<Select value={pathname} onValueChange={(value)=>router.push(value)}>
+								<SelectTrigger className="h-9 px-2 text-[10px]"><SelectValue placeholder="Go to editor..." /></SelectTrigger>
+								<SelectContent><SelectItem value="/background-snippets">Background Snippets</SelectItem><SelectItem value="/mesh-gradients">Mesh Gradients</SelectItem><SelectItem value="/color-lab">Color Lab</SelectItem></SelectContent>
+							</Select>
+						</div>
 					</div>}
 					{!isMobile && <ScrollArea className={cn("inset-shadow-[0_1px_rgb(0_0_0/0.10)] max-h-[95vh] rounded-xl border bg-card-bg p-3 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0", !isSidebarExpanded && "pointer-events-none w-0 overflow-hidden border-0 p-0 opacity-0")}>
 						<div className="space-y-3">
