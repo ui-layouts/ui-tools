@@ -347,8 +347,8 @@ export default function BackgroundPatternGenerator() {
 									maskFade={maskFade}
 									setMaskFade={setMaskFade}
 								/>
-							</div>
-							<div className="rounded-lg border bg-main">
+							</div>}
+							{activeSidebarTab === "settings" && <div className="rounded-lg border bg-main">
 								<GradientControls
 									useGradient={useGradient}
 									setUseGradient={setUseGradient}
@@ -373,7 +373,18 @@ export default function BackgroundPatternGenerator() {
 									setDragIndex={setDragIndex}
 									dragIndex={dragIndex}
 								/>
-							</div>
+							</div>}
+							{activeSidebarTab === "presets" && (
+								<PresetGallery
+									onSelectPreset={handleSelectPreset}
+									activePresetId={activePresetId}
+								/>
+							)}
+							{activeSidebarTab === "saved" && (
+								<p className="rounded-lg border bg-main p-3 text-sm text-primary/60">
+									Saved snippets will appear here after save support is added.
+								</p>
+							)}
 							{/* <div className="bg-main rounded-lg border">
              
             </div> */}
