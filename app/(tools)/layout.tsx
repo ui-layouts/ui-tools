@@ -9,7 +9,10 @@ function Toolslayout({ children }: { children: React.ReactNode }) {
 	const isFullPlayground =
 		pathname === "/svg-line-draw" ||
 		pathname === "/shadows" ||
-		pathname === "/clip-paths";
+		pathname === "/clip-paths" ||
+		pathname === "/mesh-gradients" ||
+		pathname === "/background-snippets" ||
+		pathname === "/color-lab";
 
 	return (
 		<div className="h-screen overflow-hidden bg-white text-black dark:bg-black dark:text-white">
