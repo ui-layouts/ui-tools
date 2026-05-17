@@ -2,9 +2,14 @@
 
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { useGradientStops } from "@/hooks/use-gradient-stops";
+import { cn } from "@/lib/utils";
+import { Bookmark, PanelsTopLeft, Settings2 } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import { CodeDisplay } from "./code-output/code-display";
 import { getFullCode } from "./code-output/code-generator";
 import { ColorPickerPopover } from "./color-pickers/color-picker-popover";
@@ -17,6 +22,10 @@ import { BackgroundPreview } from "./preview/background-preview";
 
 export default function BackgroundPatternGenerator() {
 	const isMobile = useMediaQuery("(max-width:1024px)");
+	const [activeSidebarTab, setActiveSidebarTab] = useState<"presets" | "settings" | "saved">("settings");
+	const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+	const pathname = usePathname();
+	const router = useRouter();
 	const [patternType, setPatternType] = useState("grid");
 	const [bgColor, setBgColor] = useState("#000000");
 
@@ -221,14 +230,15 @@ export default function BackgroundPatternGenerator() {
 					Please use a desktop/laptop to view the Editor.
 				</p>
 			)}
-			<div
-				className=" mx-auto gap-4 px-3 pb-8 lg:container lg:grid lg:grid-cols-12 lg:px-0 xl:grid-cols-4"
-				id="editor"
-			>
-				{!isMobile && (
-					<ScrollArea className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] max-h-[95vh] rounded-xl border bg-card-bg p-3 lg:col-span-4 xl:col-span-1 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0 ">
+			<div className="h-full w-full overflow-hidden p-3" id="editor">
+				<div className={cn("relative grid h-full min-h-0 gap-3", isMobile ? "grid-cols-1" : isSidebarExpanded ? "lg:grid-cols-[70px_320px_minmax(0,1fr)]" : "lg:grid-cols-[70px_0px_minmax(0,1fr)]")}>
+					{!isMobile && <div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
+						<div className="space-y-2">{[{ key: "presets", label: "Presets", icon: PanelsTopLeft }, { key: "settings", label: "Settings", icon: Settings2 }, { key: "saved", label: "Saved", icon: Bookmark }].map((item)=><button type="button" key={item.key} onClick={()=>{setIsSidebarExpanded(true);setActiveSidebarTab(item.key as "presets"|"settings"|"saved");}} className={cn("grid h-16 w-full place-items-center rounded-md border px-1 py-1 font-semibold text-[11px]",activeSidebarTab===item.key?"border-primary bg-primary text-primary-foreground":"bg-main")}><item.icon className="h-4 w-4"/><span>{item.label}</span></button>)}</div>
+						<Select value={pathname} onValueChange={(value)=>router.push(value)}><SelectTrigger className="h-9 px-2 text-[10px]"><SelectValue placeholder="Go to editor..." /></SelectTrigger><SelectContent><SelectItem value="/background-snippets">BG</SelectItem><SelectItem value="/mesh-gradients">Mesh</SelectItem><SelectItem value="/color-lab">Color</SelectItem></SelectContent></Select>
+					</div>}
+					{!isMobile && <ScrollArea className={cn("inset-shadow-[0_1px_rgb(0_0_0/0.10)] max-h-[95vh] rounded-xl border bg-card-bg p-3 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0", !isSidebarExpanded && "pointer-events-none w-0 overflow-hidden border-0 p-0 opacity-0")}>
 						<div className="space-y-3">
-							<div className="space-y-2 rounded-lg border bg-main p-3">
+							{activeSidebarTab === "settings" && <div className="space-y-2 rounded-lg border bg-main p-3">
 								<ColorPickerPopover
 									color={bgColor}
 									onChange={setBgColor}
@@ -285,8 +295,8 @@ export default function BackgroundPatternGenerator() {
 									maskFade={maskFade}
 									setMaskFade={setMaskFade}
 								/>
-							</div>
-							<div className="rounded-lg border bg-main">
+							</div>}
+							{activeSidebarTab === "settings" && <div className="rounded-lg border bg-main">
 								<GradientControls
 									useGradient={useGradient}
 									setUseGradient={setUseGradient}
@@ -311,15 +321,13 @@ export default function BackgroundPatternGenerator() {
 									setDragIndex={setDragIndex}
 									dragIndex={dragIndex}
 								/>
-							</div>
-							{/* <div className="bg-main rounded-lg border">
-             
-            </div> */}
+							</div>}
+							{activeSidebarTab === "presets" && <PresetGallery onSelectPreset={handleSelectPreset} activePresetId={activePresetId} />}
+							{activeSidebarTab === "saved" && <p className="text-primary/60 text-sm">Saved snippets will appear here.</p>}
 						</div>
-					</ScrollArea>
-				)}
+					</ScrollArea>}
 
-				<div className="relative flex h-full flex-col gap-2 lg:col-span-8 lg:h-[95vh] xl:col-span-3 ">
+				<div className="relative col-span-12 h-full min-h-0 lg:col-auto"><div className="relative flex h-full flex-col gap-2 lg:h-[95vh]">
 					<div className="relative inset-shadow-[0_1px_rgb(0_0_0/0.10)] h-96 flex-grow rounded-xl border border-t-0 bg-card-bg p-2 lg:h-auto dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
 						<BackgroundPreview
 							bgColor={bgColor}
@@ -391,12 +399,7 @@ export default function BackgroundPatternGenerator() {
 							maskFade={maskFade}
 						/>
 					</div>
-					<div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] flex h-44 w-full gap-2 rounded-xl border border-t-0 bg-card-bg p-2 2xl:h-60 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
-						<PresetGallery
-							onSelectPreset={handleSelectPreset}
-							activePresetId={activePresetId}
-						/>
-					</div>
+				</div></div>
 				</div>
 			</div>
 		</>

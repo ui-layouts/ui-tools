@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { cn } from "@/lib/utils";
@@ -307,7 +307,31 @@ export function ShaderGradientGenerator(): JSX.Element {
 									camera: "bg-main border 2xl:p-4 p-2 rounded-lg",
 								}}
 								/>}
-								{activeSidebarTab === "presets" && <div className="space-y-2">{ExampleGradients.map((example)=><Button key={example.id} variant="empty" className="w-full justify-start border" onClick={()=>{setSelectedExample(example.id);setSettings(example.settings);}}>{example.id}</Button>)}</div>}
+								{activeSidebarTab === "presets" && (
+									<div className="grid grid-cols-2 gap-2">
+										{ExampleGradients.map((example) => (
+											<Button
+												key={example.id}
+												variant="empty"
+												onClick={() => {
+													setSelectedExample(example.id);
+													setSettings(example.settings);
+												}}
+												className={cn(
+													"relative h-20 w-full overflow-hidden rounded-md border p-1",
+													selectedExample === example.id && "bg-main",
+												)}
+											>
+												<div
+													className="h-full w-full rounded-md"
+													style={{
+														background: `linear-gradient(135deg, ${example.settings.color1}, ${example.settings.color2}, ${example.settings.color3})`,
+													}}
+												/>
+											</Button>
+										))}
+									</div>
+								)}
 								{activeSidebarTab === "saved" && <p className="text-sm text-primary/60">Saved gradients will appear here.</p>}
 							</ScrollArea>
 						</div>}
@@ -367,38 +391,6 @@ export function ShaderGradientGenerator(): JSX.Element {
 							</ShaderGradientCanvas>
 						</Suspense>
 					</div>
-					<ScrollArea className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] h-36 w-full gap-2 rounded-xl border border-t-0 bg-card-bg p-2 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0 ">
-						<div className="flex h-full w-full whitespace-nowrap">
-							{ExampleGradients.map((example, _index) => (
-								<Button
-									key={example?.id}
-									variant="empty"
-									onClick={() => {
-										setSelectedExample(example.id);
-										setSettings(example?.settings);
-									}}
-									className={cn(
-										"relative h-full w-32 shrink-0 cursor-pointer overflow-hidden rounded-md p-2",
-										selectedExample === example.id
-											? "border bg-main"
-											: "layeroutline",
-									)}
-								>
-									<div
-										className="relative h-full w-full overflow-hidden rounded-md"
-										style={{
-											background: `linear-gradient(135deg, ${example.settings.color1}, ${example.settings.color2}, ${example.settings.color3})`,
-										}}
-									>
-										{example?.settings?.grain === "on" && (
-											<div className=" absolute top-0 left-0 h-full w-full bg-[url('/noise.gif')] opacity-10" />
-										)}
-									</div>
-								</Button>
-							))}
-						</div>
-						<ScrollBar orientation="horizontal" />
-					</ScrollArea>
 					</div></div>
 				</div>
 				</div>
