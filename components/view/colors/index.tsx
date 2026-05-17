@@ -30,6 +30,10 @@ import {
 	rgbToHex,
 } from "@/lib/color-utils";
 import { Pipette } from "lucide-react";
+import { Bookmark, PanelsTopLeft, Settings2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { AllColorFormats } from "./all-color-formats";
 import { ColorPaletteSection } from "./color-palette-section";
@@ -40,6 +44,10 @@ import { ThemeGenerator } from "./theme-generator";
 
 export default function ColorConverter() {
 	const [showPalette, setShowPalette] = useState(true); // Show palette by default
+	const [activeSidebarTab, setActiveSidebarTab] = useState<"presets" | "settings" | "saved">("settings");
+	const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+	const pathname = usePathname();
+	const router = useRouter();
 
 	const {
 		hexValue,
@@ -300,9 +308,21 @@ export default function ColorConverter() {
 
 	return (
 		<>
-			<div className="container mx-auto w-full pb-10">
-				<div className="space-y-6 ">
-					<div className="grid gap-10 px-4 sm:px-0 lg:grid-cols-2">
+			<div className="h-full w-full overflow-hidden p-3">
+				<div className={cn("relative grid h-full min-h-0 gap-3", isSidebarExpanded ? "lg:grid-cols-[70px_320px_minmax(0,1fr)]" : "lg:grid-cols-[70px_0px_minmax(0,1fr)]")}>
+					<div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
+						<div className="space-y-2">{[{ key: "presets", label: "Presets", icon: PanelsTopLeft }, { key: "settings", label: "Settings", icon: Settings2 }, { key: "saved", label: "Saved", icon: Bookmark }].map((item)=><button type="button" key={item.key} onClick={()=>{setIsSidebarExpanded(true);setActiveSidebarTab(item.key as "presets"|"settings"|"saved");}} className={cn("grid h-16 w-full place-items-center rounded-md border px-1 py-1 font-semibold text-[11px]",activeSidebarTab===item.key?"border-primary bg-primary text-primary-foreground":"bg-main")}><item.icon className="h-4 w-4"/><span>{item.label}</span></button>)}</div>
+						<Select value={pathname} onValueChange={(value)=>router.push(value)}><SelectTrigger className="h-9 px-2 text-[10px]"><SelectValue placeholder="Go to editor..." /></SelectTrigger><SelectContent><SelectItem value="/color-lab">Color</SelectItem><SelectItem value="/mesh-gradients">Mesh</SelectItem><SelectItem value="/background-snippets">BG</SelectItem></SelectContent></Select>
+					</div>
+					<div className={cn("inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-3 lg:block dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0", !isSidebarExpanded && "pointer-events-none w-0 overflow-hidden border-0 p-0 opacity-0")}>
+						{activeSidebarTab === "settings" && <SimplifiedColorPicker
+							hexValue={hexValue} rgbValues={rgbValues} hslValues={hslValues} colorName={colorName} handleHexChange={handleHexChange} handleRgbChange={handleRgbChange} handleHslChange={handleHslChange} handleColorPicker={handleColorPicker} setHexValue={setHexValue}
+						/>}
+						{activeSidebarTab === "presets" && <ColorPaletteSection showPalette={showPalette} setShowPalette={setShowPalette} palette={palette} setHexValue={setHexValue} />}
+						{activeSidebarTab === "saved" && <HistoryFavorites history={history} setHexValue={setHexValue} />}
+					</div>
+					<div className="space-y-6">
+						<div className="grid gap-10 px-4 sm:px-0 lg:grid-cols-2">
 						<div className="space-y-4">
 							{/* Main Color Picker */}
 							<SimplifiedColorPicker
@@ -336,9 +356,10 @@ export default function ColorConverter() {
 							{/* History and Favorites */}
 							<HistoryFavorites history={history} setHexValue={setHexValue} />
 						</div>
+						</div>
+						{/* Theme Generator Section */}
+						<ThemeGenerator hexValue={hexValue} />
 					</div>
-					{/* Theme Generator Section */}
-					<ThemeGenerator hexValue={hexValue} />
 				</div>
 			</div>
 		</>

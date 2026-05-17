@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { cn } from "@/lib/utils";
 import type {
@@ -14,6 +15,8 @@ import type {
 } from "@/types/shader-gradient";
 import { ShaderGradientCanvas } from "@shadergradient/react";
 import { ShaderGradient } from "@shadergradient/react";
+import { Bookmark, PanelsTopLeft, Settings2 } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import { type JSX, Suspense, useState } from "react";
 import { ControlPanel } from "./control-panel";
 import { CopyCode } from "./copy-code";
@@ -257,6 +260,10 @@ export function ShaderGradientGenerator(): JSX.Element {
 	const [settings, setSettings] =
 		useState<ShaderGradientSettings>(defaultSettings);
 	const [selectedExample, setSelectedExample] = useState<string>("");
+	const [activeSidebarTab, setActiveSidebarTab] = useState<"presets" | "settings" | "saved">("settings");
+	const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+	const pathname = usePathname();
+	const router = useRouter();
 	const updateSettings = (
 		newSettings: Partial<ShaderGradientSettings>,
 	): void => {
@@ -271,35 +278,43 @@ export function ShaderGradientGenerator(): JSX.Element {
 				</p>
 			)}
 
-			<div
-				className="relative mx-auto w-full gap-3 px-3 pb-5 lg:container lg:grid lg:grid-cols-12 lg:px-0 xl:grid-cols-4"
-				id="editor"
-			>
-				{/* Left Column: Control Panel */}
-				{!isMobile && (
-					<div
-						className={
-							"relative inset-shadow-[0_1px_rgb(0_0_0/0.10)] h-[95vh] rounded-xl border bg-card-bg lg:z-0 lg:col-span-4 lg:block lg:max-h-[95vh] lg:w-full xl:col-span-1 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0 "
-						}
-					>
-						<ScrollArea className=" h-full rounded-xl p-3">
-							<ControlPanel
-								settings={settings}
-								updateSettings={updateSettings}
-								sections={allControls}
+				<div className="h-full w-full overflow-hidden p-3" id="editor">
+					<div className={cn("relative grid h-full min-h-0 gap-3", isMobile ? "grid-cols-1" : isSidebarExpanded ? "lg:grid-cols-[70px_320px_minmax(0,1fr)]" : "lg:grid-cols-[70px_0px_minmax(0,1fr)]")}>
+						{!isMobile && <div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
+							<div className="space-y-2">
+								{[{ key: "presets", label: "Presets", icon: PanelsTopLeft }, { key: "settings", label: "Settings", icon: Settings2 }, { key: "saved", label: "Saved", icon: Bookmark }].map((item) => (
+									<button type="button" key={item.key} onClick={() => { setIsSidebarExpanded(true); setActiveSidebarTab(item.key as "presets" | "settings" | "saved"); }} className={cn("grid h-16 w-full place-items-center rounded-md border px-1 py-1 font-semibold text-[11px]", activeSidebarTab === item.key ? "border-primary bg-primary text-primary-foreground" : "bg-main")}>
+										<item.icon className="h-4 w-4" />
+										<span>{item.label}</span>
+									</button>
+								))}
+							</div>
+							<Select value={pathname} onValueChange={(value) => router.push(value)}>
+								<SelectTrigger className="h-9 px-2 text-[10px]"><SelectValue placeholder="Go to editor..." /></SelectTrigger>
+								<SelectContent><SelectItem value="/mesh-gradients">Mesh</SelectItem><SelectItem value="/background-snippets">BG</SelectItem><SelectItem value="/color-lab">Color</SelectItem></SelectContent>
+							</Select>
+						</div>}
+						{!isMobile && <div className={cn("inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-3 lg:block dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0", !isSidebarExpanded && "pointer-events-none w-0 overflow-hidden border-0 p-0 opacity-0")}>
+							<ScrollArea className="h-full">
+								{activeSidebarTab === "settings" && <ControlPanel
+									settings={settings}
+									updateSettings={updateSettings}
+									sections={allControls}
 								sectionClassNames={{
 									basic: "bg-main border 2xl:p-4 p-2 rounded-lg",
 									effects: "bg-main border 2xl:p-4 p-2 rounded-lg",
 									position: "bg-main border 2xl:p-4 p-2 rounded-lg",
 									camera: "bg-main border 2xl:p-4 p-2 rounded-lg",
 								}}
-							/>
-						</ScrollArea>
-					</div>
-				)}
+								/>}
+								{activeSidebarTab === "presets" && <div className="space-y-2">{ExampleGradients.map((example)=><Button key={example.id} variant="empty" className="w-full justify-start border" onClick={()=>{setSelectedExample(example.id);setSettings(example.settings);}}>{example.id}</Button>)}</div>}
+								{activeSidebarTab === "saved" && <p className="text-sm text-primary/60">Saved gradients will appear here.</p>}
+							</ScrollArea>
+						</div>}
 
 				{/* Middle Column: Gradient Preview */}
-				<div className="relative flex h-full flex-col gap-2 lg:col-span-8 lg:h-[95vh] xl:col-span-3 ">
+					<div className="relative col-span-12 h-full min-h-0 lg:col-auto">
+					<div className="relative flex h-full flex-col gap-2 lg:h-[95vh]">
 					<div className="relative inset-shadow-[0_1px_rgb(0_0_0/0.10)] h-96 flex-grow rounded-xl border border-t-0 bg-card-bg p-2 lg:h-auto dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
 						<CopyCode settings={settings} />
 						<Suspense>
@@ -384,8 +399,9 @@ export function ShaderGradientGenerator(): JSX.Element {
 						</div>
 						<ScrollBar orientation="horizontal" />
 					</ScrollArea>
+					</div></div>
 				</div>
-			</div>
-		</>
+				</div>
+			</>
 	);
 }
