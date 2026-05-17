@@ -254,8 +254,6 @@ const allControls: ControlSections = {
 
 export function ShaderGradientGenerator(): JSX.Element {
 	const isMobile = useMediaQuery("(max-width:1024px)");
-	const [viewAll] = useState(false);
-
 	const [settings, setSettings] =
 		useState<ShaderGradientSettings>(defaultSettings);
 	const [selectedExample, setSelectedExample] = useState<string>("");
@@ -267,46 +265,6 @@ export function ShaderGradientGenerator(): JSX.Element {
 
 	return (
 		<>
-			<div
-				className={cn(
-					"xl:overflow-none relative mx-auto grid w-[80%] max-w-screen-lg grid-cols-3 gap-2 overflow-hidden pb-10 sm:gap-4 lg:grid-cols-4 lg:gap-8 lg:pb-10 xl:max-w-screen-xl xl:grid-cols-5 2xl:gap-10",
-					viewAll ? "h-full" : "lg:h-[28rem]",
-				)}
-			>
-				{!viewAll && (
-					<div className="absolute bottom-0 left-0 z-10 grid h-60 w-full place-content-center bg-gradient-to-t from-42% from-white dark:from-black" />
-				)}
-
-				{(viewAll ? ExampleGradients : ExampleGradients.slice(0, 10)).map(
-					(mesh) => (
-						<div
-							key={mesh.id}
-							className="relative grid aspect-square w-full cursor-pointer place-items-center rounded-lg border bg-card-bg p-2 shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] lg:p-5 2xl:h-48 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-neutral-950"
-							onClick={() => {
-								setSelectedExample(mesh.id);
-								setSettings(mesh?.settings);
-							}}
-							onKeyDown={(e) => {
-								if (e.key === "Enter") {
-									setSelectedExample(mesh.id);
-									setSettings(mesh?.settings);
-								}
-							}}
-						>
-							<div
-								className="relative h-full w-full overflow-hidden rounded-md"
-								style={{
-									background: `linear-gradient(135deg, ${mesh.settings.color1}, ${mesh.settings.color2}, ${mesh.settings.color3})`,
-								}}
-							>
-								{mesh?.settings?.grain === "on" && (
-									<div className=" absolute top-0 left-0 h-full w-full bg-[url('/noise.gif')] opacity-10" />
-								)}
-							</div>
-						</div>
-					),
-				)}
-			</div>
 			{isMobile && (
 				<p className="pb-2 text-center text-primary/60">
 					Please use a desktop/laptop to view the Editor.

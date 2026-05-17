@@ -3,24 +3,20 @@
 import { useState } from "react";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { useGradientStops } from "@/hooks/use-gradient-stops";
-import { cn } from "@/lib/utils";
-import { ChevronsDown } from "lucide-react";
 import { CodeDisplay } from "./code-output/code-display";
 import { getFullCode } from "./code-output/code-generator";
 import { ColorPickerPopover } from "./color-pickers/color-picker-popover";
 import { GradientControls } from "./gradient-controls/gradient-controls";
 import { MaskControls } from "./mask-controls/mask-controls";
 import { PatternControls } from "./pattern-controls/pattern-controls";
-import { type IPreset, presets } from "./preset/data";
-import { PresetCard, PresetGallery } from "./preset/preset-gallery";
+import type { IPreset } from "./preset/data";
+import { PresetGallery } from "./preset/preset-gallery";
 import { BackgroundPreview } from "./preview/background-preview";
 
 export default function BackgroundPatternGenerator() {
 	const isMobile = useMediaQuery("(max-width:1024px)");
-	const [viewAll, setViewAll] = useState(false);
 	const [patternType, setPatternType] = useState("grid");
 	const [bgColor, setBgColor] = useState("#000000");
 
@@ -220,55 +216,6 @@ export default function BackgroundPatternGenerator() {
 
 	return (
 		<>
-			<article className="space-y-3 pb-8">
-				<h1 className="text-center font-medium text-2xl capitalize sm:text-3xl md:text-5xl">
-					Experiment with beautiful <br /> background Snippets.
-				</h1>
-
-				<div className="mx-auto flex w-fit items-center justify-center gap-2 font-semibold">
-					<div className="flex gap-2 rounded-md border bg-card-bg p-2 shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
-						Expand
-						<Switch
-							id="view-all-switch"
-							checked={viewAll}
-							onCheckedChange={setViewAll}
-							className="bg-main"
-						/>
-					</div>
-					<a
-						href="#editor"
-						className="group flex cursor-pointer gap-1 rounded-md border bg-card-bg p-2 text-primary shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] hover:bg-accent dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0"
-					>
-						Click to Editor
-						<ChevronsDown />
-					</a>
-				</div>
-			</article>
-
-			<div
-				className={cn(
-					"xl:overflow-none relative mx-auto grid w-[80%] max-w-screen-lg grid-cols-3 gap-2 overflow-hidden pb-10 sm:gap-4 lg:grid-cols-4 lg:gap-8 lg:pb-10 xl:max-w-screen-xl xl:grid-cols-5 2xl:gap-10",
-					viewAll ? "h-full" : "h-[28rem]",
-				)}
-			>
-				{!viewAll && (
-					<div className="absolute bottom-0 left-0 z-10 grid h-60 w-full place-content-center bg-gradient-to-t from-42% from-white dark:from-black" />
-				)}
-				{(viewAll ? presets : presets.slice(0, 10)).map((preset) => (
-					<PresetCard
-						key={preset.id}
-						preset={preset}
-						cardClassName={cn(
-							" w-full",
-							viewAll ? "h-28 2xl:h-36" : "h-full 2xl:h-full",
-						)}
-						hideName={true}
-						className="border-0 bg-card-bg p-2 shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] lg:p-5 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]"
-						onSelect={handleSelectPreset}
-						isActive={preset.id === activePresetId}
-					/>
-				))}
-			</div>
 			{isMobile && (
 				<p className="pb-2 text-center text-primary/60">
 					Please use a desktop/laptop to view the Editor.

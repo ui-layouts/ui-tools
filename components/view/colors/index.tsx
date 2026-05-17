@@ -29,7 +29,7 @@ import {
 	parseRgba,
 	rgbToHex,
 } from "@/lib/color-utils";
-import { ChevronsDown, Pipette } from "lucide-react";
+import { Pipette } from "lucide-react";
 import { useState } from "react";
 import { AllColorFormats } from "./all-color-formats";
 import { ColorPaletteSection } from "./color-palette-section";
@@ -301,30 +301,6 @@ export default function ColorConverter() {
 	return (
 		<>
 			<div className="container mx-auto w-full pb-10">
-				<article className="space-y-3 pb-14">
-					<h1 className="text-center font-medium text-2xl capitalize sm:text-3xl md:text-5xl">
-						Play, Pick, Convert and <br /> Generate New Colors 🎨
-					</h1>
-
-					<div className="mx-auto flex w-fit items-center justify-center gap-2">
-						{/* <div className="flex gap-2 rounded-md border bg-card-bg p-2 shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
-						Expand
-						<Switch
-							id="view-all-switch"
-							checked={viewAll}
-							onCheckedChange={setViewAll}
-							className="bg-main"
-						/>
-					</div> */}
-						<a
-							href="#shadcn-theme"
-							className="group flex cursor-pointer gap-1 rounded-md border bg-card-bg p-2 font-semibold text-primary shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] hover:bg-accent dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0"
-						>
-							Shadcn/ui theme
-							<ChevronsDown />
-						</a>
-					</div>
-				</article>
 				<div className="space-y-6 ">
 					<div className="grid gap-10 px-4 sm:px-0 lg:grid-cols-2">
 						<div className="space-y-4">
