@@ -164,3 +164,80 @@ body {
 		@apply bg-main;
 	}
 }
+
+/* Shared, edge-to-edge studio language for every generator. */
+[data-tool-studio="true"] {
+	--studio-line: color-mix(in oklab, currentColor 11%, transparent);
+	background: radial-gradient(
+			circle at 72% 8%,
+			color-mix(in oklab, #6d8cff 8%, transparent),
+			transparent 28rem
+		),
+		linear-gradient(
+			to right,
+			transparent 0,
+			transparent calc(100% - 1px),
+			var(--studio-line) calc(100% - 1px)
+		);
+	background-size: auto, min(100%, 1440px) 100%;
+	background-position: center;
+	margin-inline: auto;
+	max-width: 1600px;
+}
+
+@media (min-width: 1024px) {
+	[data-tool-studio="true"] {
+		gap: 0 !important;
+		padding: 0 !important;
+	}
+
+	/* Navigation and controls read as quiet page edges, not floating boxes. */
+	[data-tool-studio="true"].grid > :first-child,
+	[data-tool-studio="true"] > .grid > :first-child {
+		border-width: 0 1px 0 0 !important;
+		border-radius: 0 !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		padding: 1rem .625rem !important;
+	}
+
+	[data-tool-studio="true"].grid > :nth-child(2),
+	[data-tool-studio="true"] > .grid > :nth-child(2) {
+		border-width: 0 1px 0 0 !important;
+		border-radius: 0 !important;
+		box-shadow: none !important;
+		background: color-mix(in oklab, hsl(var(--background)) 82%, transparent) !important;
+		padding: 1.25rem !important;
+	}
+
+	[data-tool-studio="true"].grid > :last-child,
+	[data-tool-studio="true"] > .grid > :last-child {
+		padding: clamp(1rem, 2.5vw, 2.5rem) !important;
+	}
+}
+
+[data-tool-studio="true"] button,
+[data-tool-studio="true"] [role="button"] {
+	transition: background-color 160ms ease, color 160ms ease, border-color 160ms
+		ease, transform 160ms ease;
+}
+
+[data-tool-studio="true"] button:focus-visible,
+[data-tool-studio="true"] [role="button"]:focus-visible,
+[data-tool-studio="true"] input:focus-visible {
+	outline: 2px solid #315efb;
+	outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+	*,
+	*::before,
+	*::after {
+		animation-duration: .01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: .01ms !important;
+	}
+}

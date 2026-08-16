@@ -267,7 +267,7 @@ export default function ClipPathGenerator() {
       )}
 
       <div
-        id="editor"
+        id="editor" data-tool-studio="true"
         className={`relative grid h-full min-h-0 grid-cols-12 gap-3 p-3 ${
           isSidebarExpanded
             ? "lg:grid-cols-[70px_340px_minmax(0,1fr)]"

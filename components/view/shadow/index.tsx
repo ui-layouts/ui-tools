@@ -269,7 +269,7 @@ export default function ShadowGenerator() {
         </p>
       )}
       <div
-        id="editor"
+        id="editor" data-tool-studio="true"
         className={`relative z-10 grid h-full min-h-0 grid-cols-12 gap-3 p-3 ${
           isSidebarExpanded
             ? "lg:grid-cols-[70px_340px_minmax(0,1fr)]"

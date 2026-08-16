@@ -251,7 +251,7 @@ function SVGLineDrawGenerator() {
             ? "lg:grid-cols-[70px_320px_minmax(0,1fr)]"
             : "lg:grid-cols-[70px_0px_minmax(0,1fr)]",
         )}
-        id="editor"
+        id="editor" data-tool-studio="true"
       >
         <div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
           <div className="space-y-2">
