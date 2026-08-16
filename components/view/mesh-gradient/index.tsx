@@ -269,7 +269,7 @@ export function ShaderGradientGenerator(): JSX.Element {
 	const [activeSidebarTab, setActiveSidebarTab] = useState<
 		"presets" | "settings" | "saved"
 	>("settings");
-	const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+	const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
 	const pathname = usePathname();
 	const router = useRouter();
 	const updateSettings = (
@@ -287,23 +287,14 @@ export function ShaderGradientGenerator(): JSX.Element {
 			)}
 
 			<div
-				className="h-full w-full overflow-hidden p-3"
+				className="h-full w-full overflow-hidden"
 				id="editor"
 				data-tool-studio="true"
 			>
-				<div
-					className={cn(
-						"relative grid h-full min-h-0 gap-3",
-						isMobile
-							? "grid-cols-1"
-							: isSidebarExpanded
-								? "lg:grid-cols-[70px_320px_minmax(0,1fr)]"
-								: "lg:grid-cols-[70px_0px_minmax(0,1fr)]",
-					)}
-				>
-					{!isMobile && (
-						<div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
-							<div className="space-y-2">
+				<div className="relative h-full min-h-0">
+					{
+						<div className="-translate-x-1/2 absolute bottom-32 left-1/2 z-40 flex max-w-[calc(100vw-24px)] overflow-x-auto rounded-lg border bg-background/95 p-1.5 shadow-lg backdrop-blur">
+							<div className="flex gap-1">
 								{[
 									{ key: "presets", label: "Presets", icon: PanelsTopLeft },
 									{ key: "settings", label: "Settings", icon: Settings2 },
@@ -312,15 +303,20 @@ export function ShaderGradientGenerator(): JSX.Element {
 									<button
 										type="button"
 										key={item.key}
+										aria-pressed={
+											isSidebarExpanded && activeSidebarTab === item.key
+										}
 										onClick={() => {
-											setIsSidebarExpanded(true);
+											setIsSidebarExpanded((open) =>
+												activeSidebarTab === item.key ? !open : true,
+											);
 											setActiveSidebarTab(
 												item.key as "presets" | "settings" | "saved",
 											);
 										}}
 										className={cn(
-											"grid h-16 w-full place-items-center rounded-md border px-1 py-1 font-semibold text-[11px]",
-											activeSidebarTab === item.key
+											"grid h-11 min-w-20 grid-flow-col place-items-center gap-2 rounded-md border px-3 font-medium text-xs",
+											isSidebarExpanded && activeSidebarTab === item.key
 												? "border-primary bg-primary text-primary-foreground"
 												: "bg-main",
 										)}
@@ -330,25 +326,27 @@ export function ShaderGradientGenerator(): JSX.Element {
 									</button>
 								))}
 							</div>
-							<Select
-								value={pathname}
-								onValueChange={(value) => router.push(value)}
-							>
-								<SelectTrigger className="h-9 px-2 text-[10px]">
-									<SelectValue placeholder="Go to editor..." />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="/mesh-gradients">Mesh</SelectItem>
-									<SelectItem value="/background-snippets">BG</SelectItem>
-									<SelectItem value="/color-lab">Color</SelectItem>
-								</SelectContent>
-							</Select>
+							<div className="hidden">
+								<Select
+									value={pathname}
+									onValueChange={(value) => router.push(value)}
+								>
+									<SelectTrigger className="h-9 px-2 text-[10px]">
+										<SelectValue placeholder="Go to editor..." />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="/mesh-gradients">Mesh</SelectItem>
+										<SelectItem value="/background-snippets">BG</SelectItem>
+										<SelectItem value="/color-lab">Color</SelectItem>
+									</SelectContent>
+								</Select>
+							</div>
 						</div>
-					)}
-					{!isMobile && (
+					}
+					{
 						<div
 							className={cn(
-								"inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-3 lg:block dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0",
+								"absolute inset-y-3 left-3 z-30 w-[min(340px,calc(100vw-24px))] rounded-lg border bg-background/95 p-3 shadow-xl backdrop-blur",
 								!isSidebarExpanded &&
 									"pointer-events-none w-0 overflow-hidden border-0 p-0 opacity-0",
 							)}
@@ -393,23 +391,23 @@ export function ShaderGradientGenerator(): JSX.Element {
 									</div>
 								)}
 								{activeSidebarTab === "saved" && (
-									<p className="text-sm text-primary/60">
+									<p className="text-primary/60 text-sm">
 										Saved gradients will appear here.
 									</p>
 								)}
 							</ScrollArea>
 						</div>
-					)}
+					}
 
 					{/* Middle Column: Gradient Preview */}
-					<div className="relative col-span-12 h-full min-h-0 lg:col-auto">
-						<div className="relative flex h-full flex-col gap-2 lg:h-[95vh]">
-							<div className="relative inset-shadow-[0_1px_rgb(0_0_0/0.10)] h-96 flex-grow rounded-xl border border-t-0 bg-card-bg p-2 lg:h-auto dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
+					<div className="relative h-full min-h-0">
+						<div className="relative flex h-full flex-col gap-2 p-3">
+							<div className="relative inset-shadow-[0_1px_rgb(0_0_0/0.10)] h-96 flex-grow bg-card-bg lg:h-auto dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
 								<CopyCode settings={settings} />
 								<Suspense>
 									<ShaderGradientCanvas
 										key={settings.fovEnabled ? settings.fov : "defaultFOV"}
-										className="rounded-lg"
+										className=""
 										style={{
 											width: "100%",
 											height: "100%",

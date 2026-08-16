@@ -150,7 +150,7 @@ html {
 
 body {
 	color: var(--foreground);
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 [data-radix-scroll-area-viewport] > div {
 	display: block !important;
@@ -181,39 +181,7 @@ body {
 		);
 	background-size: auto, min(100%, 1440px) 100%;
 	background-position: center;
-	margin-inline: auto;
-	max-width: 1600px;
-}
-
-@media (min-width: 1024px) {
-	[data-tool-studio="true"] {
-		gap: 0 !important;
-		padding: 0 !important;
-	}
-
-	/* Navigation and controls read as quiet page edges, not floating boxes. */
-	[data-tool-studio="true"].grid > :first-child,
-	[data-tool-studio="true"] > .grid > :first-child {
-		border-width: 0 1px 0 0 !important;
-		border-radius: 0 !important;
-		box-shadow: none !important;
-		background: transparent !important;
-		padding: 1rem .625rem !important;
-	}
-
-	[data-tool-studio="true"].grid > :nth-child(2),
-	[data-tool-studio="true"] > .grid > :nth-child(2) {
-		border-width: 0 1px 0 0 !important;
-		border-radius: 0 !important;
-		box-shadow: none !important;
-		background: color-mix(in oklab, hsl(var(--background)) 82%, transparent) !important;
-		padding: 1.25rem !important;
-	}
-
-	[data-tool-studio="true"].grid > :last-child,
-	[data-tool-studio="true"] > .grid > :last-child {
-		padding: clamp(1rem, 2.5vw, 2.5rem) !important;
-	}
+	width: 100%;
 }
 
 [data-tool-studio="true"] button,
