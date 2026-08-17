@@ -15,7 +15,7 @@ function Toolslayout({ children }: { children: React.ReactNode }) {
 		pathname === "/color-lab";
 
 	return (
-		<div className="h-screen overflow-hidden bg-white text-black dark:bg-black dark:text-white">
+		<div className="h-screen overflow-hidden bg-[#fbfbfa] text-black dark:bg-[#080808] dark:text-white">
 			{!isFullPlayground && <ToolsHeader />}
 			<main
 				className={

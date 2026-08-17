@@ -2,7 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { cn } from "@/lib/utils";
 import type {
@@ -260,8 +266,10 @@ export function ShaderGradientGenerator(): JSX.Element {
 	const [settings, setSettings] =
 		useState<ShaderGradientSettings>(defaultSettings);
 	const [selectedExample, setSelectedExample] = useState<string>("");
-	const [activeSidebarTab, setActiveSidebarTab] = useState<"presets" | "settings" | "saved">("settings");
-	const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+	const [activeSidebarTab, setActiveSidebarTab] = useState<
+		"presets" | "settings" | "saved"
+	>("settings");
+	const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
 	const pathname = usePathname();
 	const router = useRouter();
 	const updateSettings = (
@@ -278,35 +286,85 @@ export function ShaderGradientGenerator(): JSX.Element {
 				</p>
 			)}
 
-				<div className="h-full w-full overflow-hidden p-3" id="editor">
-					<div className={cn("relative grid h-full min-h-0 gap-3", isMobile ? "grid-cols-1" : isSidebarExpanded ? "lg:grid-cols-[70px_320px_minmax(0,1fr)]" : "lg:grid-cols-[70px_0px_minmax(0,1fr)]")}>
-						{!isMobile && <div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-2 lg:flex lg:flex-col lg:justify-between dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
-							<div className="space-y-2">
-								{[{ key: "presets", label: "Presets", icon: PanelsTopLeft }, { key: "settings", label: "Settings", icon: Settings2 }, { key: "saved", label: "Saved", icon: Bookmark }].map((item) => (
-									<button type="button" key={item.key} onClick={() => { setIsSidebarExpanded(true); setActiveSidebarTab(item.key as "presets" | "settings" | "saved"); }} className={cn("grid h-16 w-full place-items-center rounded-md border px-1 py-1 font-semibold text-[11px]", activeSidebarTab === item.key ? "border-primary bg-primary text-primary-foreground" : "bg-main")}>
+			<div
+				className="h-full w-full overflow-hidden"
+				id="editor"
+				data-tool-studio="true"
+			>
+				<div className="relative h-full min-h-0">
+					{
+						<div className="-translate-x-1/2 absolute bottom-32 left-1/2 z-40 flex max-w-[calc(100vw-24px)] overflow-x-auto rounded-lg border bg-background/95 p-1.5 shadow-lg backdrop-blur">
+							<div className="flex gap-1">
+								{[
+									{ key: "presets", label: "Presets", icon: PanelsTopLeft },
+									{ key: "settings", label: "Settings", icon: Settings2 },
+									{ key: "saved", label: "Saved", icon: Bookmark },
+								].map((item) => (
+									<button
+										type="button"
+										key={item.key}
+										aria-pressed={
+											isSidebarExpanded && activeSidebarTab === item.key
+										}
+										onClick={() => {
+											setIsSidebarExpanded((open) =>
+												activeSidebarTab === item.key ? !open : true,
+											);
+											setActiveSidebarTab(
+												item.key as "presets" | "settings" | "saved",
+											);
+										}}
+										className={cn(
+											"grid h-11 min-w-20 grid-flow-col place-items-center gap-2 rounded-md border px-3 font-medium text-xs",
+											isSidebarExpanded && activeSidebarTab === item.key
+												? "border-primary bg-primary text-primary-foreground"
+												: "bg-main",
+										)}
+									>
 										<item.icon className="h-4 w-4" />
 										<span>{item.label}</span>
 									</button>
 								))}
 							</div>
-							<Select value={pathname} onValueChange={(value) => router.push(value)}>
-								<SelectTrigger className="h-9 px-2 text-[10px]"><SelectValue placeholder="Go to editor..." /></SelectTrigger>
-								<SelectContent><SelectItem value="/mesh-gradients">Mesh</SelectItem><SelectItem value="/background-snippets">BG</SelectItem><SelectItem value="/color-lab">Color</SelectItem></SelectContent>
-							</Select>
-						</div>}
-						{!isMobile && <div className={cn("inset-shadow-[0_1px_rgb(0_0_0/0.10)] hidden h-full min-h-0 rounded-lg border bg-card-bg p-3 lg:block dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0", !isSidebarExpanded && "pointer-events-none w-0 overflow-hidden border-0 p-0 opacity-0")}>
+							<div className="hidden">
+								<Select
+									value={pathname}
+									onValueChange={(value) => router.push(value)}
+								>
+									<SelectTrigger className="h-9 px-2 text-[10px]">
+										<SelectValue placeholder="Go to editor..." />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="/mesh-gradients">Mesh</SelectItem>
+										<SelectItem value="/background-snippets">BG</SelectItem>
+										<SelectItem value="/color-lab">Color</SelectItem>
+									</SelectContent>
+								</Select>
+							</div>
+						</div>
+					}
+					{
+						<div
+							className={cn(
+								"absolute inset-y-3 left-3 z-30 w-[min(340px,calc(100vw-24px))] rounded-lg border bg-background/95 p-3 shadow-xl backdrop-blur",
+								!isSidebarExpanded &&
+									"pointer-events-none w-0 overflow-hidden border-0 p-0 opacity-0",
+							)}
+						>
 							<ScrollArea className="h-full">
-								{activeSidebarTab === "settings" && <ControlPanel
-									settings={settings}
-									updateSettings={updateSettings}
-									sections={allControls}
-								sectionClassNames={{
-									basic: "bg-main border 2xl:p-4 p-2 rounded-lg",
-									effects: "bg-main border 2xl:p-4 p-2 rounded-lg",
-									position: "bg-main border 2xl:p-4 p-2 rounded-lg",
-									camera: "bg-main border 2xl:p-4 p-2 rounded-lg",
-								}}
-								/>}
+								{activeSidebarTab === "settings" && (
+									<ControlPanel
+										settings={settings}
+										updateSettings={updateSettings}
+										sections={allControls}
+										sectionClassNames={{
+											basic: "bg-main border 2xl:p-4 p-2 rounded-lg",
+											effects: "bg-main border 2xl:p-4 p-2 rounded-lg",
+											position: "bg-main border 2xl:p-4 p-2 rounded-lg",
+											camera: "bg-main border 2xl:p-4 p-2 rounded-lg",
+										}}
+									/>
+								)}
 								{activeSidebarTab === "presets" && (
 									<div className="grid grid-cols-2 gap-2">
 										{ExampleGradients.map((example) => (
@@ -332,68 +390,125 @@ export function ShaderGradientGenerator(): JSX.Element {
 										))}
 									</div>
 								)}
-								{activeSidebarTab === "saved" && <p className="text-sm text-primary/60">Saved gradients will appear here.</p>}
+								{activeSidebarTab === "saved" && (
+									<p className="text-primary/60 text-sm">
+										Saved gradients will appear here.
+									</p>
+								)}
 							</ScrollArea>
-						</div>}
+						</div>
+					}
 
-				{/* Middle Column: Gradient Preview */}
-					<div className="relative col-span-12 h-full min-h-0 lg:col-auto">
-					<div className="relative flex h-full flex-col gap-2 lg:h-[95vh]">
-					<div className="relative inset-shadow-[0_1px_rgb(0_0_0/0.10)] h-96 flex-grow rounded-xl border border-t-0 bg-card-bg p-2 lg:h-auto dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
-						<CopyCode settings={settings} />
-						<Suspense>
-							<ShaderGradientCanvas
-								key={settings.fovEnabled ? settings.fov : "defaultFOV"}
-								className="rounded-lg"
-								style={{
-									width: "100%",
-									height: "100%",
-								}}
-								lazyLoad={settings.lazyLoad}
-								{...(settings.fovEnabled ? { fov: settings.fov } : {})}
-								pixelDensity={settings.pixelDensity}
-								pointerEvents={settings.pointerEvents}
+					{/* Middle Column: Gradient Preview */}
+					<div className="relative h-full min-h-0">
+						<div className="relative flex h-full flex-col gap-2 p-3">
+							<div className="relative inset-shadow-[0_1px_rgb(0_0_0/0.10)] h-96 flex-grow bg-card-bg lg:h-auto dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]">
+								<CopyCode settings={settings} />
+								<Suspense>
+									<ShaderGradientCanvas
+										key={settings.fovEnabled ? settings.fov : "defaultFOV"}
+										className=""
+										style={{
+											width: "100%",
+											height: "100%",
+										}}
+										lazyLoad={settings.lazyLoad}
+										{...(settings.fovEnabled ? { fov: settings.fov } : {})}
+										pixelDensity={settings.pixelDensity}
+										pointerEvents={settings.pointerEvents}
+									>
+										<ShaderGradient
+											animate={settings.animate}
+											type={settings.type}
+											wireframe={settings.wireframe}
+											shader={settings.shader}
+											uTime={settings.uTime}
+											uSpeed={settings.uSpeed}
+											uStrength={settings.uStrength}
+											uDensity={settings.uDensity}
+											uFrequency={settings.uFrequency}
+											uAmplitude={settings.uAmplitude}
+											positionX={settings.positionX}
+											positionY={settings.positionY}
+											positionZ={settings.positionZ}
+											rotationX={settings.rotationX}
+											rotationY={settings.rotationY}
+											rotationZ={settings.rotationZ}
+											color1={settings.color1}
+											color2={settings.color2}
+											color3={settings.color3}
+											reflection={settings.reflection}
+											cAzimuthAngle={settings.cAzimuthAngle}
+											cPolarAngle={settings.cPolarAngle}
+											cDistance={settings.cDistance}
+											cameraZoom={settings.cameraZoom}
+											lightType={settings.lightType}
+											brightness={settings.brightness}
+											envPreset={settings.envPreset}
+											grain={settings.grain}
+											toggleAxis={settings.toggleAxis}
+											zoomOut={settings.zoomOut}
+											hoverState={settings.hoverState}
+											enableTransition={settings.enableTransition}
+										/>
+									</ShaderGradientCanvas>
+								</Suspense>
+							</div>
+							<section
+								aria-labelledby="gradient-examples"
+								className="shrink-0 border-t pt-4"
 							>
-								<ShaderGradient
-									animate={settings.animate}
-									type={settings.type}
-									wireframe={settings.wireframe}
-									shader={settings.shader}
-									uTime={settings.uTime}
-									uSpeed={settings.uSpeed}
-									uStrength={settings.uStrength}
-									uDensity={settings.uDensity}
-									uFrequency={settings.uFrequency}
-									uAmplitude={settings.uAmplitude}
-									positionX={settings.positionX}
-									positionY={settings.positionY}
-									positionZ={settings.positionZ}
-									rotationX={settings.rotationX}
-									rotationY={settings.rotationY}
-									rotationZ={settings.rotationZ}
-									color1={settings.color1}
-									color2={settings.color2}
-									color3={settings.color3}
-									reflection={settings.reflection}
-									cAzimuthAngle={settings.cAzimuthAngle}
-									cPolarAngle={settings.cPolarAngle}
-									cDistance={settings.cDistance}
-									cameraZoom={settings.cameraZoom}
-									lightType={settings.lightType}
-									brightness={settings.brightness}
-									envPreset={settings.envPreset}
-									grain={settings.grain}
-									toggleAxis={settings.toggleAxis}
-									zoomOut={settings.zoomOut}
-									hoverState={settings.hoverState}
-									enableTransition={settings.enableTransition}
-								/>
-							</ShaderGradientCanvas>
-						</Suspense>
+								<div className="mb-3 flex items-end justify-between gap-4">
+									<div>
+										<p className="font-medium text-[11px] text-muted-foreground uppercase tracking-[0.18em]">
+											Starting points
+										</p>
+										<h2 id="gradient-examples" className="font-medium text-sm">
+											Example gradients
+										</h2>
+									</div>
+									<p className="hidden text-muted-foreground text-xs sm:block">
+										Choose an example, then make it yours.
+									</p>
+								</div>
+								<div className="flex gap-2 overflow-x-auto pb-2">
+									{ExampleGradients.slice(0, 6).map((example) => (
+										<button
+											type="button"
+											key={example.id}
+											aria-pressed={selectedExample === example.id}
+											onClick={() => {
+												setSelectedExample(example.id);
+												setSettings(example.settings);
+											}}
+											className={cn(
+												"group min-w-28 text-left",
+												selectedExample === example.id &&
+													"text-blue-600 dark:text-blue-400",
+											)}
+										>
+											<span
+												className="mb-1.5 block h-12 rounded-md border p-1"
+												aria-hidden="true"
+											>
+												<span
+													className="block h-full rounded-sm"
+													style={{
+														background: `linear-gradient(135deg, ${example.settings.color1}, ${example.settings.color2}, ${example.settings.color3})`,
+													}}
+												/>
+											</span>
+											<span className="block truncate text-xs">
+												{example.name}
+											</span>
+										</button>
+									))}
+								</div>
+							</section>
+						</div>
 					</div>
-					</div></div>
 				</div>
-				</div>
-			</>
+			</div>
+		</>
 	);
 }

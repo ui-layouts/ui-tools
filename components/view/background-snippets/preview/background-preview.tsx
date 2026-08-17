@@ -185,7 +185,7 @@ export function BackgroundPreview({
 	}
 
 	return (
-		<div className="relative h-full w-full overflow-hidden rounded-lg border">
+		<div className="relative h-full w-full overflow-hidden">
 			<div className="relative h-full w-full" style={baseStyle}>
 				{patternType !== "none" && (
 					<div

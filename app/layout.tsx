@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/lib/theme-provider";
@@ -7,11 +6,6 @@ import { siteConfig } from "@/lib/utils";
 import Script from "next/script";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "sonner";
-
-const poppins = Space_Grotesk({
-	subsets: ["latin"],
-	weight: ["300", "400", "500", "600", "700"],
-});
 
 export const metadata: Metadata = {
 	title: {
@@ -125,7 +119,7 @@ export default function RootLayout({
               gtag('config', 'G-5G7F4C09QB');
         `}
 			</Script>
-			<body suppressHydrationWarning className={`${poppins.className}`}>
+			<body suppressHydrationWarning>
 				<NuqsAdapter>
 					<ThemeProvider attribute="class">
 						<TooltipProvider delayDuration={0}>
