@@ -1,4 +1,3 @@
-import ClipPathGenerator from "@/components/view/clip-path";
 import ColorConverter from "@/components/view/colors";
 import { siteConfig } from "@/lib/utils";
 import type { Metadata } from "next";
@@ -89,6 +88,9 @@ const PageLoading = () => {
 function page() {
   return (
     <>
+      <h1 className="container mx-auto mb-3 w-full px-4 pt-8 text-center font-medium text-2xl sm:text-3xl md:text-5xl">
+        Color Lab <br /> Pick, Convert and Generate Colors 🎨
+      </h1>
       <Suspense fallback={<PageLoading />}>
         <ColorConverter />
       </Suspense>
