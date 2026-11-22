@@ -301,12 +301,8 @@ export default function ColorConverter() {
 
   return (
     <>
-      <div className="container mx-auto w-full pb-10 pt-8">
-        <article className="space-y-3 pb-14">
-          <h1 className="text-center font-medium text-2xl capitalize sm:text-3xl md:text-5xl">
-            Play, Pick, Convert and <br /> Generate New Colors 🎨
-          </h1>
-
+      <div className="container mx-auto w-full pb-10">
+        <div className="pb-14">
           <div className="mx-auto flex w-fit items-center justify-center gap-2">
             {/* <div className="flex gap-2 rounded-md border bg-card-bg p-2 shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
 						Expand
@@ -325,7 +321,7 @@ export default function ColorConverter() {
               <ChevronsDown />
             </a>
           </div>
-        </article>
+        </div>
         <div className="flex justify-center items-center">
           <CarbonAd />
         </div>

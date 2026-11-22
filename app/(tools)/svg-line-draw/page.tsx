@@ -75,6 +75,9 @@ const PageLoading = () => {
 function page() {
   return (
     <>
+      <h1 className="mx-auto mb-3 w-full px-5 pt-8 text-center font-medium text-2xl sm:text-3xl md:text-5xl xl:container 2xl:px-0">
+        SVG Path Animation for <br /> Developers &amp; Designers
+      </h1>
       <Suspense fallback={<PageLoading />}>
         <SVGLineDrawGenerator />
       </Suspense>

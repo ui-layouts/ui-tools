@@ -282,12 +282,8 @@ function SVGLineDrawGenerator() {
     });
   };
   return (
-    <div className="mx-auto w-full px-5 pt-8 xl:container 2xl:px-0">
-      <article className="space-y-3 pb-8">
-        <h1 className="text-center font-medium text-2xl sm:text-3xl md:text-5xl ">
-          SVG Path Animation For <br /> Developers & Designers
-        </h1>
-
+    <div className="mx-auto w-full px-5 xl:container 2xl:px-0">
+      <div className="pb-8">
         <div className="mx-auto flex w-fit items-center justify-center gap-2 font-semibold">
           <div className="flex gap-2 rounded-md border bg-card-bg p-2 shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
             Expand
@@ -306,7 +302,7 @@ function SVGLineDrawGenerator() {
             <ChevronsDown />
           </a>
         </div>
-      </article>
+      </div>
       <div className="flex justify-center items-center">
         <CarbonAd />
       </div>
